@@ -1,406 +1,675 @@
-<!doctype html>
-<html lang="en"><head><script src="/_sdk/telemetry_sdk.js"></script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hippoplot</title>
-  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;700;800&amp;family=DM+Sans:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
-  <style>
-        :root {
-            --bg: #ffffff; --surface: #F8F9FB; --fg: #0F1117;
-            --primary: #4A9BE8; --accent: #E84B95; --muted: #6B7280;
-            --border: #E4E7EC; --dark: #191B2E; --dark-footer: #1E2235;
-        }
-        body { font-family: 'DM Sans', sans-serif; color: var(--fg); }
-        h1, h2, h3, .heading-font { font-family: 'Bricolage Grotesque', sans-serif; }
-        .glass-nav { background: rgba(255,255,255,0.92); backdrop-filter: blur(20px); }
-        .glow-pin { filter: drop-shadow(0 0 12px var(--accent)) drop-shadow(0 0 40px #7B5EA7); }
-        .hero-mesh {
-            background: radial-gradient(ellipse at 100% -20%, rgba(232,75,149,0.08) 0%, transparent 40%),
-                        radial-gradient(ellipse at 0% 100%, rgba(74,155,232,0.2) 0%, transparent 40%),
-                        radial-gradient(ellipse at 100% 100%, rgba(123,94,167,0.2) 0%, transparent 40%),
-                        var(--dark);
-        }
-        .dot-grid {
-            background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
-            background-size: 24px 24px;
-        }
-        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
-        .reveal.visible { opacity: 1; transform: translateY(0); }
-        .card-lift { transition: transform 0.3s, box-shadow 0.3s; }
-        .card-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
-        .counter-animate { transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); }
-        .toggle-btn { transition: background 0.2s, color 0.2s; }
-        .toggle-btn.active { background: var(--fg); color: #fff; }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HippoPlot — Everything Local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="icon" type="image/jpeg" href="/hippoplot-logo.jpg">
+<script type="module" src="/src/main.js"></script>
+</head>
+<body>
 
-        @keyframes heartbeat-pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            25% { opacity: 0.8; transform: scale(0.98); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-        .hero-pill { animation: heartbeat-pulse 3s ease-in-out infinite; }
-        .dashed-connector { border-top: 2px dashed var(--border); }
-        @media (max-width: 900px) {
-            .desktop-nav { display: none !important; }
-            .features-grid { grid-template-columns: 1fr !important; }
-            .value-grid { grid-template-columns: 1fr 1fr !important; }
-            .how-grid { flex-direction: column !important; }
-            .how-grid .connector { display: none !important; }
-            .footer-grid { grid-template-columns: 1fr !important; }
-        }
-    </style>
-  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
-  <script src="/_sdk/resizing_sdk.js" type="text/javascript"></script>
- </head>
- <body data-template-id="__page-root" class="min-h-screen w-full" style="background: rgb(255, 255, 255);"><!-- Navigation -->
-  <nav class="glass-nav fixed top-0 left-0 w-full z-50 border-b border-[#E4E7EC]" style="height:68px">
-   <div class="max-w-[1100px] mx-auto h-full flex items-center justify-between px-5">
-    <div class="flex items-center gap-2">
-     <img data-template-id="nav-logo" class="canva-image w-7 h-7 object-contain" loading="lazy" src="canva://MAHLZw0K-V4/1" alt="Hippoplot colorful hippo robot character"><span data-template-id="nav-brand" class="canva-text heading-font text-lg font-bold" style="color: rgb(15, 17, 23); font-weight: 800; font-style: normal; font-size: 16px;">Hippoplot</span>
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-mark">
+        <img src="/hippoplot-logo.jpg" alt="HippoPlot">
+      </div>
+      <span>Hippo<span class="nav-logo-accent">Plot</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#discover">Discover</a></li>
+      <li><a href="#stories">Stories</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="n-ghost">Log in</button>
+      <button class="n-solid">Get early access</button>
     </div>
-    <div class="desktop-nav flex items-center gap-6"><a data-template-id="nav-link-1" class="canva-link text-sm cursor-pointer hover:text-[#4A9BE8] transition-colors" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Features</a> <a data-template-id="nav-link-2" class="canva-link text-sm cursor-pointer hover:text-[#4A9BE8] transition-colors" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">How it works</a> <a data-template-id="nav-link-3" class="canva-link text-sm cursor-pointer hover:text-[#4A9BE8] transition-colors" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Download</a>
-    </div>
-    <div class="flex items-center gap-3"><button data-template-id="nav-login" class="canva-button text-sm px-4 py-2 rounded-[10px] hover:opacity-80 transition-opacity" style="background: transparent; color: rgb(15, 17, 23); font-weight: 500; font-style: normal; font-size: 16px;">Log in</button> <button data-template-id="nav-cta" class="canva-button text-sm px-4 py-2 rounded-[10px] font-semibold hover:opacity-90 transition-opacity" style="background: rgb(232, 75, 149); color: rgb(255, 255, 255); font-weight: 600; font-style: normal; font-size: 16px;">Join the waiting list</button>
-    </div>
-   </div>
-  </nav><!-- Hero -->
-  <section class="hero-mesh w-full relative overflow-hidden" style="padding-top:68px">
-   <div class="dot-grid absolute inset-0 z-0"></div>
-   <div class="relative z-10 max-w-[1100px] mx-auto px-5 py-24 md:py-36 flex flex-col items-center text-center"><span data-template-id="hero-pill" class="canva-tag hero-pill inline-block px-4 py-1.5 rounded-full text-xs uppercase tracking-[1.5px] font-semibold mb-6 border border-[#E84B95]" style="background: rgba(232, 75, 149, 0.4); color: rgb(211, 3, 96); font-weight: 700; font-style: normal; font-size: 16px;">Now live in your neighbourhood</span>
-    <h1 data-template-id="hero-title" class="canva-text heading-font text-white mb-6" style="letter-spacing: -3px; font-size: 100px; line-height: 1.1; color: rgb(255, 255, 255); font-weight: 800; font-style: normal;">Everything local. Discovered now.</h1>
-    <p data-template-id="hero-subtitle" class="canva-text mt-4 max-w-xl" style="color: rgba(255, 255, 255, 0.8); font-weight: 400; font-style: normal; font-size: 18px;">Hippoplot maps the hidden gems, live updates, and local businesses around you — all in one place.</p><button data-template-id="hero-cta" class="canva-button mt-8 px-8 py-3.5 rounded-[10px] font-bold text-base hover:opacity-90 transition-opacity" style="background: rgb(232, 75, 149); color: rgb(255, 255, 255); font-weight: 700; font-style: normal; font-size: 16px;">Join the waiting list</button> <!-- Waitlist Form -->
-    <div class="mt-10 bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 w-full max-w-md">
-     <div class="flex gap-2 mb-4 bg-white/10 rounded-[10px] p-1"><button type="button" class="toggle-btn active flex-1 py-2 rounded-lg text-sm font-medium" id="toggle-personal">Personal</button> <button type="button" class="toggle-btn flex-1 py-2 rounded-lg text-sm font-medium text-white/70" id="toggle-business">Business</button>
-     </div>
-     <form id="waitlist-form-hero" class="flex flex-col sm:flex-row gap-3"><input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-[10px] text-sm bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[#4A9BE8]" required=""> <button type="submit" class="px-6 py-3 rounded-[10px] font-semibold text-sm text-white" style="background:#E84B95">Join waitlist</button>
-     </form>
-     <div id="hero-success" class="hidden text-center py-4">
-      <p class="text-[#e84b95] font-semibold">🎉 You're on the list!</p>
-     </div>
-    </div><!-- Avatar stack -->
-    <div class="mt-6 flex items-center gap-3">
-     <div class="flex -space-x-2"><img data-template-id="avatar-1" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/5920763/pexels-photo-5920763.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Young woman smiling"> <img data-template-id="avatar-2" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Man with arms crossed smiling"> <img data-template-id="avatar-3" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/7468194/pexels-photo-7468194.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Professional woman portrait"> <img data-template-id="avatar-4" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/4728851/pexels-photo-4728851.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Smiling man with beard outdoors"> <img data-template-id="avatar-5" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/3868897/pexels-photo-3868897.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Woman with short hair smiling">
-     </div>
-     <p class="text-white/80 text-sm"><span id="counter" class="counter-animate font-bold text-white">247</span> people already on the list</p>
-    </div>
-   </div>
-   <div class="w-full h-px" style="background:#ffffff"></div>
-  </section><!-- Value Props -->
-  <section class="w-full bg-white reveal">
-   <div class="max-w-[1100px] mx-auto px-5 py-16">
-    <div class="value-grid grid grid-cols-4 gap-0 border border-[#E4E7EC] rounded-2xl overflow-hidden">
-     <div class="p-6 border-r border-[#E4E7EC]">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#e0f2fe">
-       <i data-lucide="map-pin" class="w-5 h-5" style="color:#4A9BE8"></i>
-      </div>
-      <h3 data-template-id="vp-1-title" class="canva-text heading-font font-bold text-sm mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Hyper-local</h3>
-      <p data-template-id="vp-1-desc" class="canva-text text-xs" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Everything within walking distance, pinned on your map.</p>
-     </div>
-     <div class="p-6 border-r border-[#E4E7EC]">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#fce7f3">
-       <i data-lucide="zap" class="w-5 h-5" style="color:#E84B95"></i>
-      </div>
-      <h3 data-template-id="vp-2-title" class="canva-text heading-font font-bold text-sm mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Live updates</h3>
-      <p data-template-id="vp-2-desc" class="canva-text text-xs" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Real-time posts from businesses around you.</p>
-     </div>
-     <div class="p-6 border-r border-[#E4E7EC]">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#f3e8ff">
-       <i data-lucide="sparkles" class="w-5 h-5" style="color:#a855f7"></i>
-      </div>
-      <h3 data-template-id="vp-3-title" class="canva-text heading-font font-bold text-sm mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">AI-powered</h3>
-      <p data-template-id="vp-3-desc" class="canva-text text-xs" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Smart recommendations that learn your taste.</p>
-     </div>
-     <div class="p-6">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center mb-3" style="background:#ccfbf1">
-       <i data-lucide="users" class="w-5 h-5" style="color:#0d9488"></i>
-      </div>
-      <h3 data-template-id="vp-4-title" class="canva-text heading-font font-bold text-sm mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Community first</h3>
-      <p data-template-id="vp-4-desc" class="canva-text text-xs" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Built by locals, for locals.</p>
-     </div>
-    </div>
-   </div>
-  </section><!-- Features -->
-  <section class="w-full bg-white reveal">
-   <div class="max-w-[1100px] mx-auto px-5 py-24"><span data-template-id="features-pill" class="canva-tag inline-block px-4 py-1.5 rounded-full text-xs uppercase tracking-[1.5px] font-semibold mb-4" style="background: rgba(74, 155, 232, 0.15); color: rgb(74, 155, 232); font-weight: 400; font-style: normal; font-size: 17px;">WHY HIPPOPLOT</span>
-    <h2 data-template-id="features-title" class="canva-text heading-font mb-3" style="letter-spacing: -1.8px; color: rgb(15, 17, 23); font-weight: 800; font-style: normal; font-size: 55px;">Built for your 
-neighbourhood</h2>
-    <div class="flex items-start gap-3 mb-12">
-     <div class="w-1 h-12 rounded-full" style="background:#4A9BE8"></div>
-     <p data-template-id="features-subtitle" class="canva-text max-w-lg" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Everything happening locally — surfaced intelligently, updated live, and tailored to you.</p>
-    </div><!-- Category Cards with Images -->
-    <div class="grid md:grid-cols-3 gap-6 mb-12">
-     <div class="rounded-2xl overflow-hidden border border-[#E4E7EC] card-lift"><img data-template-id="cat-img-1" class="canva-image w-full h-40 object-cover" loading="lazy" src="canva://MAHLZhon__4/1" alt="Barista smiling in cosy café with espresso machine">
-      <div class="p-5">
-       <h3 data-template-id="cat-1-title" class="canva-text heading-font font-bold mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Cafés, Restaurants &amp; Bars</h3>
-       <p data-template-id="cat-1-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Find the perfect spot for your morning coffee, a long lunch with friends, or late-night drinks — all hidden gems within walking distance.</p>
-      </div>
-     </div>
-     <div class="rounded-2xl overflow-hidden border border-[#E4E7EC] card-lift"><img data-template-id="cat-img-2" class="canva-image w-full h-40 object-cover" loading="lazy" src="https://images.pexels.com/photos/1743555/pexels-photo-1743555.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=800" alt="Modern co-working space with green chair">
-      <div class="p-5">
-       <h3 data-template-id="cat-2-title" class="canva-text heading-font font-bold mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Work Spaces</h3>
-       <p data-template-id="cat-2-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Discover co-working spots and quiet corners to get things done.</p>
-      </div>
-     </div>
-     <div class="rounded-2xl overflow-hidden border border-[#E4E7EC] card-lift"><img data-template-id="cat-img-8" class="canva-image w-full h-40 object-cover" loading="lazy" src="canva://MAHLZ0wo_O0/1" alt="Red balloons with percentage symbols for discount offers">
-      <div class="p-5">
-       <h3 data-template-id="cat-8-title" class="canva-text heading-font font-bold mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Offers &amp; Discounts</h3>
-       <p data-template-id="cat-8-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Find the best deals, exclusive promotions, and limited-time offers from local businesses.</p>
-      </div>
-     </div>
-    </div>
-    <div class="grid md:grid-cols-3 gap-6 mb-12">
-     <div class="rounded-2xl overflow-hidden border border-[#E4E7EC] card-lift"><img data-template-id="cat-img-4" class="canva-image w-full h-40 object-cover" loading="lazy" src="canva://MAHLZma45uU/1" alt="Person crafting handmade candles with precision and care">
-      <div class="p-5">
-       <h3 data-template-id="cat-4-title" class="canva-text heading-font font-bold mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Home Business</h3>
-       <p data-template-id="cat-4-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Support local makers, crafters, and entrepreneurs from their home studios and workshops.</p>
-      </div>
-     </div>
-     <div class="rounded-2xl overflow-hidden border border-[#E4E7EC] card-lift"><img data-template-id="cat-img-5" class="canva-image w-full h-40 object-cover" loading="lazy" src="canva://MAHLZnLKAGE/1" alt="Person with backpack standing on wooden deck overlooking forest trees">
-      <div class="p-5">
-       <h3 data-template-id="cat-5-title" class="canva-text heading-font font-bold mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Home Rental</h3>
-       <p data-template-id="cat-5-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Find modern apartments, co-living spaces, and vacation rentals — whether you're looking to live or escape for the weekend.</p>
-      </div>
-     </div>
-     <div class="rounded-2xl overflow-hidden border border-[#E4E7EC] card-lift"><img data-template-id="cat-img-6" class="canva-image w-full h-40 object-cover" loading="lazy" src="canva://MAHLZnZcv8Q/1" alt="Concert crowd with raised hands under vibrant stage lights">
-      <div class="p-5">
-       <h3 data-template-id="cat-6-title" class="canva-text heading-font font-bold mb-1" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Local Events</h3>
-       <p data-template-id="cat-6-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">From popup markets to local meetups — discover what's on around you this weekend.</p>
-      </div>
-     </div>
-    </div>
-    <div class="features-grid grid md:grid-cols-2 gap-4">
-     <div data-template-id="feat-1" class="canva-card rounded-xl p-4 card-lift border flex items-start gap-3" style="border-color: rgb(191, 219, 254); background: rgb(239, 246, 255);">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#dbeafe">
-       <i data-lucide="sparkles" class="w-4 h-4" style="color:#2563eb"></i>
-      </div>
-      <div class="flex-1 min-w-0">
-       <h3 data-template-id="feat-1-title" class="canva-text heading-font font-bold text-xs mb-1" style="color: rgb(30, 64, 175); font-weight: 700; font-style: normal; font-size: 19px;">AI Gems</h3>
-       <p data-template-id="feat-1-desc" class="canva-text text-xs mb-2 line-clamp-2" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Our AI surfaces the best hidden local spots tailored to your interests — cafés, events, and markets you'd never find alone.</p><a data-template-id="feat-1-link" class="canva-link text-xs font-medium cursor-pointer hover:translate-x-1 inline-block transition-transform" style="color: rgb(37, 99, 235); font-weight: 400; font-style: normal; font-size: 16px;">Learn more →</a>
-      </div>
-     </div>
-     <div data-template-id="feat-2" class="canva-card rounded-xl p-4 card-lift border flex items-start gap-3" style="border-color: rgb(251, 207, 232); background: rgb(253, 242, 248);">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#fce7f3">
-       <i data-lucide="zap" class="w-4 h-4" style="color:#db2777"></i>
-      </div>
-      <div class="flex-1 min-w-0">
-       <h3 data-template-id="feat-2-title" class="canva-text heading-font font-bold text-xs mb-1" style="color: rgb(157, 23, 77); font-weight: 700; font-style: normal; font-size: 19px;">Live Updates</h3>
-       <p data-template-id="feat-2-desc" class="canva-text text-xs mb-2 line-clamp-2" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Businesses post what's happening right now — free tables, fresh stock, tonight's specials. You see the moment it matters.</p><a data-template-id="feat-2-link" class="canva-link text-xs font-medium cursor-pointer hover:translate-x-1 inline-block transition-transform" style="color: rgb(219, 39, 119); font-weight: 400; font-style: normal; font-size: 16px;">Learn more →</a>
-      </div>
-     </div>
-     <div data-template-id="feat-3" class="canva-card rounded-xl p-4 card-lift border flex items-start gap-3" style="border-color: rgb(233, 213, 255); background: rgb(250, 245, 255);">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#f3e8ff">
-       <i data-lucide="map" class="w-4 h-4" style="color:#9333ea"></i>
-      </div>
-      <div class="flex-1 min-w-0">
-       <h3 data-template-id="feat-3-title" class="canva-text heading-font font-bold text-xs mb-1" style="color: rgb(107, 33, 168); font-weight: 700; font-style: normal; font-size: 19px;">Hyper-local Map</h3>
-       <p data-template-id="feat-3-desc" class="canva-text text-xs mb-2 line-clamp-2" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">A living map of everything nearby. Filter by vibe, category, or distance — no noise, just what's relevant to you.</p><a data-template-id="feat-3-link" class="canva-link text-xs font-medium cursor-pointer hover:translate-x-1 inline-block transition-transform" style="color: rgb(147, 51, 234); font-weight: 400; font-style: normal; font-size: 16px;">Learn more →</a>
-      </div>
-     </div>
-     <div data-template-id="feat-4" class="canva-card rounded-xl p-4 card-lift border flex items-start gap-3" style="border-color: rgb(153, 246, 228); background: rgb(240, 253, 250);">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#ccfbf1">
-       <i data-lucide="store" class="w-4 h-4" style="color:#0d9488"></i>
-      </div>
-      <div class="flex-1 min-w-0">
-       <h3 data-template-id="feat-4-title" class="canva-text heading-font font-bold text-xs mb-1" style="color: rgb(232, 75, 149); font-weight: 700; font-style: normal; font-size: 19px;">Business Profiles</h3>
-       <p data-template-id="feat-4-desc" class="canva-text text-xs mb-2 line-clamp-2" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">Full menus, photos, services, and real-time details — everything a local business needs to be found and chosen.</p><a data-template-id="feat-4-link" class="canva-link text-xs font-medium cursor-pointer hover:translate-x-1 inline-block transition-transform" style="color: rgb(232, 75, 149); font-weight: 400; font-style: normal; font-size: 16px;">Learn more →</a>
-      </div>
-     </div>
-     <div data-template-id="feat-5" class="canva-card rounded-xl p-4 card-lift border flex items-start gap-3" style="border-color: rgb(253, 230, 138); background: rgb(255, 251, 235);">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#fef3c7">
-       <i data-lucide="calendar" class="w-4 h-4" style="color:#d97706"></i>
-      </div>
-      <div class="flex-1 min-w-0">
-       <h3 data-template-id="feat-5-title" class="canva-text heading-font font-bold text-xs mb-1" style="color: rgb(146, 64, 14); font-weight: 700; font-style: normal; font-size: 19px;">Community Events</h3>
-       <p data-template-id="feat-5-desc" class="canva-text text-xs mb-2 line-clamp-2" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">From popup markets to local meetups — discover what's on around you this weekend.</p><a data-template-id="feat-5-link" class="canva-link text-xs font-medium cursor-pointer hover:translate-x-1 inline-block transition-transform" style="color: rgb(217, 119, 6); font-weight: 400; font-style: normal; font-size: 16px;">Learn more →</a>
-      </div>
-     </div>
-     <div data-template-id="feat-6" class="canva-card rounded-xl p-4 card-lift border flex items-start gap-3" style="border-color: rgb(187, 247, 208); background: rgb(253, 242, 248);">
-      <div class="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0" style="background:#dcfce7">
-       <i data-lucide="lightbulb" class="w-4 h-4" style="color:#16a34a"></i>
-      </div>
-      <div class="flex-1 min-w-0">
-       <h3 data-template-id="feat-6-title" class="canva-text heading-font font-bold text-xs mb-1" style="color: rgb(232, 75, 149); font-weight: 700; font-style: normal; font-size: 19px;">Smart Discovery</h3>
-       <p data-template-id="feat-6-desc" class="canva-text text-xs mb-2 line-clamp-2" style="color: rgb(71, 85, 105); font-weight: 400; font-style: normal; font-size: 16px;">The more you explore, the smarter it gets — discovering the kind of places you'll love next.</p><a data-template-id="feat-6-link" class="canva-link text-xs font-medium cursor-pointer hover:translate-x-1 inline-block transition-transform" style="color: rgb(232, 75, 149); font-weight: 400; font-style: normal; font-size: 16px;">Learn more →</a>
-      </div>
-     </div>
-    </div>
-   </div>
-  </section><!-- How it Works -->
-  <section class="w-full reveal" style="background:#F8F9FB">
-   <div class="max-w-[1100px] mx-auto px-5 py-24 text-center"><span data-template-id="how-pill" class="canva-tag inline-block px-4 py-1.5 rounded-full text-xs uppercase tracking-[1.5px] font-semibold mb-4" style="background: rgba(74, 155, 232, 0.15); color: rgb(74, 155, 232); font-weight: 400; font-style: normal; font-size: 16px;">HOW IT WORKS</span>
-    <h2 data-template-id="how-title" class="canva-text heading-font mb-12" style="letter-spacing: -1.8px; color: rgb(15, 17, 23); font-weight: 800; font-style: normal; font-size: 42px;">Three steps to your local world</h2>
-    <div class="how-grid flex items-center justify-center gap-0">
-     <div data-template-id="step-1" class="canva-card bg-white rounded-2xl p-6 w-64 text-center border border-[#E4E7EC]" style="background: rgb(255, 255, 255);"><span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-3" style="background:#dbeafe;color:#2563eb">01</span>
-      <h3 data-template-id="step-1-title" class="canva-text heading-font font-bold mb-2" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Open the map</h3>
-      <p data-template-id="step-1-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Launch Hippoplot and see everything local pinned around you.</p>
-     </div>
-     <div class="connector w-12 dashed-connector"></div>
-     <div data-template-id="step-2" class="canva-card bg-white rounded-2xl p-6 w-64 text-center border border-[#E4E7EC]" style="background: rgb(255, 255, 255);"><span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-3" style="background:#fce7f3;color:#db2777">02</span>
-      <h3 data-template-id="step-2-title" class="canva-text heading-font font-bold mb-2" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Explore &amp; filter</h3>
-      <p data-template-id="step-2-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Browse by category — Food, Events, AI Gems, Community.</p>
-     </div>
-     <div class="connector w-12 dashed-connector"></div>
-     <div data-template-id="step-3" class="canva-card bg-white rounded-2xl p-6 w-64 text-center border border-[#E4E7EC]" style="background: rgb(255, 255, 255);"><span class="inline-block px-3 py-1 rounded-full text-xs font-bold mb-3" style="background:#f3e8ff;color:#9333ea">03</span>
-      <h3 data-template-id="step-3-title" class="canva-text heading-font font-bold mb-2" style="color: rgb(15, 17, 23); font-weight: 700; font-style: normal; font-size: 19px;">Go discover</h3>
-      <p data-template-id="step-3-desc" class="canva-text text-sm" style="color: rgb(107, 114, 128); font-weight: 400; font-style: normal; font-size: 16px;">Follow live updates, save favourites, and head out.</p>
-     </div>
-    </div>
-   </div>
-  </section><!-- CTA -->
-  <section class="w-full relative overflow-hidden" style="background:#191B2E">
-   <div class="absolute inset-0" style="background:radial-gradient(ellipse at center, rgba(232,75,149,0.15) 0%, transparent 60%)"></div>
-   <div class="relative z-10 max-w-[1100px] mx-auto px-5 py-24 flex flex-col items-center text-center">
-    <h2 data-template-id="cta-title" class="canva-text heading-font mb-4" style="letter-spacing: -1.8px; color: rgb(255, 255, 255); font-weight: 800; font-style: normal; font-size: 42px;">Your city is waiting for you</h2>
-    <p data-template-id="cta-subtitle" class="canva-text mb-8 max-w-lg" style="color: rgba(255, 255, 255, 0.7); font-weight: 400; font-style: normal; font-size: 16px;">Download Hippoplot free. Discover what's local, what's live, and what's worth your time.</p>
-    <div class="bg-white/5 backdrop-blur-md border border-white/20 rounded-2xl p-6 w-full max-w-md">
-     <div class="flex gap-2 mb-4 bg-white/10 rounded-[10px] p-1"><button type="button" class="toggle-btn active flex-1 py-2 rounded-lg text-sm font-medium" id="toggle-personal-2">Personal</button> <button type="button" class="toggle-btn flex-1 py-2 rounded-lg text-sm font-medium text-white/70" id="toggle-business-2">Business</button>
-     </div>
-     <form id="waitlist-form-cta" class="flex flex-col sm:flex-row gap-3"><input type="email" placeholder="Enter your email" class="flex-1 px-4 py-3 rounded-[10px] text-sm bg-white/10 border border-white/20 text-white placeholder-white/50 focus:outline-none focus:border-[#4A9BE8]" required=""> <button type="submit" class="px-6 py-3 rounded-[10px] font-semibold text-sm text-white" style="background:#E84B95">Join waitlist</button>
-     </form>
-     <div id="cta-success" class="hidden text-center py-4">
-      <p class="text-[#e84b95] font-semibold">🎉 You're on the list!</p>
-     </div>
-    </div>
-    <div class="mt-6 flex items-center gap-3">
-     <div class="flex -space-x-2"><img data-template-id="cta-avatar-1" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/5920763/pexels-photo-5920763.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Young woman smiling"> <img data-template-id="cta-avatar-2" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Man smiling confidently"> <img data-template-id="cta-avatar-3" class="canva-image w-8 h-8 rounded-full border-2 border-[#191B2E] object-cover" loading="lazy" src="https://images.pexels.com/photos/3868897/pexels-photo-3868897.jpeg?auto=compress&amp;cs=tinysrgb&amp;w=400" alt="Woman with short hair smiling">
-     </div>
-     <p class="text-white/80 text-sm"><span id="counter-2" class="font-bold text-white">247</span> people already on the list</p>
-    </div>
-   </div>
-  </section><!-- Footer -->
-  <footer class="w-full" style="background:#1E2235">
-   <div class="max-w-[1100px] mx-auto px-5 py-16">
-    <div class="footer-grid grid grid-cols-3 gap-12 mb-12">
-     <div>
-      <div class="flex items-center gap-2 mb-4"><img data-template-id="footer-logo" class="canva-image w-6 h-6 object-contain" loading="lazy" src="canva://MAHLZw0K-V4/1" alt="Hippoplot colorful hippo robot character"> <span data-template-id="footer-brand" class="canva-text text-sm font-bold" style="color: rgb(255, 255, 255); font-weight: 400; font-style: normal; font-size: 16px;">Hippoplot</span>
-      </div>
-      <p data-template-id="footer-tagline" class="canva-text text-sm mb-4" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Everything local. Discovered.</p>
-      <div class="flex gap-3"><button class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"><i data-lucide="twitter" class="w-4 h-4 text-white"></i></button> <button class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"><i data-lucide="instagram" class="w-4 h-4 text-white"></i></button> <button class="w-9 h-9 rounded-lg bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors"><i data-lucide="linkedin" class="w-4 h-4 text-white"></i></button>
-      </div>
-     </div>
-     <div>
-      <h4 data-template-id="footer-col2-title" class="canva-text text-sm font-semibold mb-4" style="color: rgb(255, 255, 255); font-weight: 400; font-style: normal; font-size: 16px;">Product</h4>
-      <ul class="space-y-2">
-       <li><a data-template-id="footer-link-1" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Features</a></li>
-       <li><a data-template-id="footer-link-2" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">How it works</a></li>
-       <li><a data-template-id="footer-link-3" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Download</a></li>
-       <li><a data-template-id="footer-link-4" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">For businesses</a></li>
-      </ul>
-     </div>
-     <div>
-      <h4 data-template-id="footer-col3-title" class="canva-text text-sm font-semibold mb-4" style="color: rgb(255, 255, 255); font-weight: 400; font-style: normal; font-size: 16px;">Company</h4>
-      <ul class="space-y-2">
-       <li><a data-template-id="footer-link-5" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">About</a></li>
-       <li><a data-template-id="footer-link-6" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Blog</a></li>
-       <li><a data-template-id="footer-link-7" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Contact</a></li>
-       <li><a data-template-id="footer-link-8" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Privacy policy</a></li>
-       <li><a data-template-id="footer-link-9" class="canva-link text-sm cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.6); font-weight: 400; font-style: normal; font-size: 16px;">Terms of service</a></li>
-      </ul>
-     </div>
-    </div>
-    <div class="border-t border-white/10 pt-6 flex flex-wrap items-center justify-between gap-4">
-     <p data-template-id="footer-copyright" class="canva-text text-xs" style="color: rgba(255, 255, 255, 0.4); font-weight: 400; font-style: normal; font-size: 16px;">© 2026 Hippoplot. All rights reserved.</p>
-     <div class="flex gap-4"><a data-template-id="footer-legal-1" class="canva-link text-xs cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.4); font-weight: 400; font-style: normal; font-size: 16px;">Privacy</a> <a data-template-id="footer-legal-2" class="canva-link text-xs cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.4); font-weight: 400; font-style: normal; font-size: 16px;">Terms</a> <a data-template-id="footer-legal-3" class="canva-link text-xs cursor-pointer hover:text-white transition-colors" style="color: rgba(255, 255, 255, 0.4); font-weight: 400; font-style: normal; font-size: 16px;">Cookies</a>
-     </div>
-    </div>
-   </div>
-  </footer>
-  <script src="/_sdk/editing_sdk.js"></script>
-  <script>
-    lucide.createIcons();
+    <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
 
-    // Scroll reveal
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, i) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => entry.target.classList.add('visible'), i * 100);
-                observer.unobserve(entry.target);
-            }
-        });
-    }, { threshold: 0.1 });
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-layer">
+    <div class="hero-grid"></div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-glow hero-glow-3"></div>
+    <div class="hero-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge" id="hero-badge">
+      <span class="badge-dot"></span>
+      Now live in your neighbourhood
+    </div>
+    <h1 id="hero-headline">
+      <span class="h1-line">Everything</span>
+      <span class="h1-line"><span class="text-cyan">local.</span> Discovered</span>
+      <span class="h1-line">now.</span>
+    </h1>
+    <p class="hero-sub" id="hero-sub">HippoPlot maps the hidden gems, live updates, and local businesses around you — all in one place. Your city has never felt this close.</p>
+    <div class="hero-actions" id="hero-actions">
+      <a class="btn-primary" href="#cta">
+        <span>Join the waitlist</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="btn-ghost" href="#features">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        See features
+      </a>
+    </div>
+    <div class="hero-stats" id="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-target="2.8">0</span><span class="hero-stat-suffix">K+</span>
+        <span class="hero-stat-label">On the waitlist</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-target="30">0</span><span class="hero-stat-suffix">+</span>
+        <span class="hero-stat-label">Cities at launch</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-target="1.2">0</span><span class="hero-stat-suffix">K</span>
+        <span class="hero-stat-label">Businesses interested</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-mockup" id="hero-mockup">
+    <div class="mockup-chassis">
+      <div class="mockup-notch"></div>
+      <div class="mockup-screen">
+        <div class="mockup-reel-progress" id="mockup-reel-progress"></div>
+        <div class="mockup-reel-container" id="mockup-reel">
+          <div class="mockup-reel-slide active" data-index="0">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&h=1066&q=80" alt="Flower shop" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Flower Store</div>
+              <div class="mockup-reel-name">Bloom & Petal</div>
+              <div class="mockup-reel-desc">Handcrafted bouquets, exotic orchids, and same-day delivery.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Greenwich Ave</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.4 mi</span>
+                <span class="mockup-reel-status live">● Open now</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="1">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&h=1066&q=80" alt="Makeup artist" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Makeup Artist</div>
+              <div class="mockup-reel-name">Gilded Beauty</div>
+              <div class="mockup-reel-desc">Bridal, editorial, and special-effects makeup by award-winning artists.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Flatiron</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.7 mi</span>
+                <span class="mockup-reel-status book">● Book ahead</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="2">
+            <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=600&h=1066&q=80" alt="Bakery" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Bakery</div>
+              <div class="mockup-reel-name">Golden Crumb</div>
+              <div class="mockup-reel-desc">Artisan sourdough, flaky croissants, and custom celebration cakes baked fresh daily.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Chelsea Market</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.6 mi</span>
+                <span class="mockup-reel-status live">● Open now</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="3">
+            <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=600&h=1066&q=80" alt="Home studio" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Home Studio</div>
+              <div class="mockup-reel-name">Willow & Wool</div>
+              <div class="mockup-reel-desc">Handmade ceramics, woven textiles, and custom home decor crafted in a cozy home studio.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Park Slope</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.3 mi</span>
+                <span class="mockup-reel-status live">● Open now</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="4">
+            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&h=1066&q=80" alt="Lawyer" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Lawyer</div>
+              <div class="mockup-reel-name">Stone & Ridge</div>
+              <div class="mockup-reel-desc">Corporate law, intellectual property, and civil litigation with 20+ years of experience.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Financial District</span>
+                <span><span class="mockup-reel-icon">📏</span> 1.0 mi</span>
+                <span class="mockup-reel-status appoint">● By appointment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-reel-side">
+          <div class="mockup-reel-side-btn-wrap">
+            <button class="mockup-reel-side-btn">♥</button>
+            <span class="mockup-reel-side-label">2.4k</span>
+          </div>
+          <div class="mockup-reel-side-btn-wrap">
+            <button class="mockup-reel-side-btn">💬</button>
+            <span class="mockup-reel-side-label">89</span>
+          </div>
+          <div class="mockup-reel-side-btn-wrap">
+            <button class="mockup-reel-side-btn">↗</button>
+            <span class="mockup-reel-side-label">Share</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mockup-float mockup-float-live">
+      <span class="mockup-float-dot-red"></span>
+      LIVE NOW
+    </div>
+    <div class="mockup-float mockup-float-watching">
+      <svg class="mockup-float-eye" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00D9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      2.4K watching
+    </div>
+    <div class="mockup-float mockup-float-plans">
+      <svg class="mockup-float-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Make plans
+    </div>
+    <div class="mockup-float mockup-float-chat">
+      <svg class="mockup-float-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+      Chat now
+    </div>
+    <div class="mockup-float mockup-float-explore">
+      <svg class="mockup-float-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Explore
+    </div>
+  </div>
+</section>
 
-    // Counter - increments on each page load
-    let count = parseInt(localStorage.getItem('hippo-count') || '248');
-    count++;
-    localStorage.setItem('hippo-count', count);
-    document.getElementById('counter').textContent = count;
-    document.getElementById('counter-2').textContent = count;
+<!-- STATS BAR -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stats-bar-item">
+      <span class="stats-bar-num" data-target="2.8">0</span><span class="stats-bar-suffix">K+</span>
+      <span class="stats-bar-label">On the waitlist</span>
+    </div>
+    <div class="stats-bar-divider"></div>
+    <div class="stats-bar-item">
+      <span class="stats-bar-num" data-target="30">0</span><span class="stats-bar-suffix">+</span>
+      <span class="stats-bar-label">Cities at launch</span>
+    </div>
+    <div class="stats-bar-item">
+      <span class="stats-bar-num" data-target="1.2">0</span><span class="stats-bar-suffix">K</span>
+      <span class="stats-bar-label">Businesses interested</span>
+    </div>
+  </div>
+</div>
 
-    // Avatar shuffling - randomly reorder avatars on each visit
-    function shuffleAvatars() {
-        const avatarIds = ['avatar-1', 'avatar-2', 'avatar-3', 'avatar-4', 'avatar-5'];
-        const ctaAvatarIds = ['cta-avatar-1', 'cta-avatar-2', 'cta-avatar-3'];
-        
-        // Fisher-Yates shuffle
-        function shuffle(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-            return shuffled;
-        }
-        
-        const shuffledHeroAvatars = shuffle(avatarIds);
-        const shuffledCtaAvatars = shuffle(ctaAvatarIds);
-        
-        // Get current image sources and shuffle them
-        const heroImages = avatarIds.map(id => document.querySelector(`[data-template-id="${id}"]`));
-        const ctaImages = ctaAvatarIds.map(id => document.querySelector(`[data-template-id="${id}"]`));
-        
-        heroImages.forEach((img, i) => {
-            const sourceImg = document.querySelector(`[data-template-id="${avatarIds[i]}"]`);
-            const targetImg = document.querySelector(`[data-template-id="${shuffledHeroAvatars[i]}"]`);
-            if (sourceImg && targetImg) {
-                // Swap image src and alt text by swapping data attributes
-                const tempSrc = sourceImg.src;
-                const tempAlt = sourceImg.alt;
-                sourceImg.src = targetImg.src;
-                sourceImg.alt = targetImg.alt;
-                targetImg.src = tempSrc;
-                targetImg.alt = tempAlt;
-            }
-        });
-        
-        ctaImages.forEach((img, i) => {
-            const sourceImg = document.querySelector(`[data-template-id="${ctaAvatarIds[i]}"]`);
-            const targetImg = document.querySelector(`[data-template-id="${shuffledCtaAvatars[i]}"]`);
-            if (sourceImg && targetImg) {
-                const tempSrc = sourceImg.src;
-                const tempAlt = sourceImg.alt;
-                sourceImg.src = targetImg.src;
-                sourceImg.alt = targetImg.alt;
-                targetImg.src = tempSrc;
-                targetImg.alt = tempAlt;
-            }
-        });
-    }
-    
-    // Shuffle avatars after SDK loads images
-    setTimeout(shuffleAvatars, 200);
+<!-- TICKER -->
+<div class="ticker-wrapper">
+  <div class="ticker-track">
+    <div class="ticker-item">Boutique Cafés</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Home Studios</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Local Bakeries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Neighborhood Run Clubs</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Pop-up Galleries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Farmers Markets</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Vintage Shops</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Rooftop Bars</div>
+    <span class="ticker-dot"></span>
+    <!-- Duplicate for seamless loop -->
+    <div class="ticker-item">Boutique Cafés</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Home Studios</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Local Bakeries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Neighborhood Run Clubs</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Pop-up Galleries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Farmers Markets</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Vintage Shops</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Rooftop Bars</div>
+    <span class="ticker-dot"></span>
+  </div>
+</div>
 
-    // Toggle buttons
-    function setupToggle(personalId, businessId) {
-        const p = document.getElementById(personalId);
-        const b = document.getElementById(businessId);
-        p.addEventListener('click', () => { p.classList.add('active'); b.classList.remove('active'); b.style.color='rgba(255,255,255,0.7)'; });
-        b.addEventListener('click', () => { b.classList.add('active'); p.classList.remove('active'); p.style.color='rgba(255,255,255,0.7)'; });
-    }
-    setupToggle('toggle-personal', 'toggle-business');
-    setupToggle('toggle-personal-2', 'toggle-business-2');
+<!-- FEATURES SECTION -->
+<section class="section" id="features">
+  <div class="section-label">Why HippoPlot</div>
+  <div class="section-header">
+    <h2 class="section-title">Built for your <span class="text-gradient">neighbourhood</span></h2>
+    <p class="section-sub">Everything happening locally — surfaced intelligently, updated live. Your city has never felt this close.</p>
+  </div>
+  <div class="features-grid" id="features-grid">
+    <div class="feature-card" data-delay="0">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-blue">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <h3>AI Gems</h3>
+      <p>Our AI surfaces the best hidden local spots tailored to your interests — cafes, events, and markets you'd never find alone.</p>
+    </div>
+    <div class="feature-card" data-delay="1">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-pink">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <h3>Live updates</h3>
+      <p>Businesses post what's happening right now — free tables, fresh stock, tonight's special. You know the moment it matters.</p>
+    </div>
+    <div class="feature-card" data-delay="2">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-purple">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <h3>Hyper-local map</h3>
+      <p>A living map of everything nearby. Filter by vibe, category, or distance — no noise, just what's relevant to you.</p>
+    </div>
+    <div class="feature-card" data-delay="3">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-teal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h3>Business profiles</h3>
+      <p>Full menus, photos, services, and real-time posts — everything a local business needs to be found and chosen.</p>
+    </div>
+    <div class="feature-card" data-delay="4">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-amber">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <h3>Community events</h3>
+      <p>From popup markets to local meetups — discover what's on around you this weekend, in one tap.</p>
+    </div>
+    <div class="feature-card" data-delay="5">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-pink">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <h3>Smart discovery</h3>
+      <p>The more you explore, the smarter it gets — surfacing exactly the kind of places you'll love next.</p>
+    </div>
+  </div>
+</section>
 
-    // Forms
-    function setupForm(formId, successId) {
-        document.getElementById(formId).addEventListener('submit', (e) => {
-            e.preventDefault();
-            e.target.classList.add('hidden');
-            document.getElementById(successId).classList.remove('hidden');
-        });
-    }
-    setupForm('waitlist-form-hero', 'hero-success');
-    setupForm('waitlist-form-cta', 'cta-success');
-</script>
- <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a0ad876a260a5541',t:'MTc4MTMxNjMxMi4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
-</body></html>
+<!-- DISCOVER SECTION -->
+<section class="section discover-section" id="discover">
+  <div class="discover-bg">
+    <div class="discover-glow"></div>
+  </div>
+  <div class="section-label">Explore</div>
+  <div class="section-header">
+    <h2 class="section-title">Discover your <span class="text-gradient">city</span></h2>
+    <p class="section-sub">Neighbourhoods come alive with HippoPlot. See what's happening around every corner.</p>
+  </div>
+  <div class="discover-grid" id="discover-grid">
+    <div class="discover-card">
+      <div class="discover-card-img">
+        <div class="discover-card-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&h=500&q=80" alt="Cafe" loading="lazy">
+      </div>
+      <div class="discover-card-body">
+        <span class="discover-tag">Cafe</span>
+        <h3>The Book Nook</h3>
+        <div class="discover-rating">★★★★★ <span>4.8</span></div>
+        <p>Specialty coffee, fresh pastries, and a quiet reading loft.</p>
+        <div class="discover-meta">
+          <span>0.3 mi</span>
+          <span class="discover-status open">Open now</span>
+        </div>
+      </div>
+    </div>
+    <div class="discover-card">
+      <div class="discover-card-img">
+        <div class="discover-card-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&h=500&q=80" alt="Market" loading="lazy">
+      </div>
+      <div class="discover-card-body">
+        <span class="discover-tag" style="background:rgba(74,155,232,0.15);color:#4A9BE8;border-color:rgba(74,155,232,0.25)">Market</span>
+        <h3>Sunday Farmers Market</h3>
+        <div class="discover-rating">★★★★★ <span>4.9</span></div>
+        <p>Local produce, artisan bread, organic honey, and handmade crafts.</p>
+        <div class="discover-meta">
+          <span>0.6 mi</span>
+          <span class="discover-status open">Open now</span>
+        </div>
+      </div>
+    </div>
+    <div class="discover-card">
+      <div class="discover-card-img">
+        <div class="discover-card-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&h=500&q=80" alt="Event" loading="lazy">
+      </div>
+      <div class="discover-card-body">
+        <span class="discover-tag" style="background:rgba(245,158,11,0.15);color:#F59E0B;border-color:rgba(245,158,11,0.25)">Event</span>
+        <h3>Jazz Night Live</h3>
+        <div class="discover-rating">★★★★★ <span>4.7</span></div>
+        <p>Weekly live jazz with local artists. Candlelit tables.</p>
+        <div class="discover-meta">
+          <span>1.2 mi</span>
+          <span class="discover-status event">Tonight 8pm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SCROLLING STORIES SECTION -->
+<section class="stories-section" id="stories">
+  <div class="section-label">Local Stories</div>
+  <div class="section-header">
+    <h2 class="section-title">Your neighbourhood <span class="text-gradient">in motion</span></h2>
+    <p class="section-sub">A curated feed of local businesses and experiences — scroll through and discover what's nearby.</p>
+  </div>
+  <div class="stories-track" id="stories-track">
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&h=900&q=80" alt="Flower shop" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Flower Store</span>
+        <h3>Bloom & Petal</h3>
+        <p>Handcrafted bouquets, exotic orchids, and same-day delivery across the city.</p>
+        <div class="story-meta">
+          <span>Greenwich Ave</span>
+          <span class="story-meta-divider"></span>
+          <span>0.4 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status live">Live now</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&h=900&q=80" alt="Salon" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Hair Dresser</span>
+        <h3>Luxe Studio</h3>
+        <p>Precision cuts, balayage color, and luxury blowouts in a sunlit salon.</p>
+        <div class="story-meta">
+          <span>West Village</span>
+          <span class="story-meta-divider"></span>
+          <span>0.5 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status live">Live now</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&h=900&q=80" alt="Makeup" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Makeup Artist</span>
+        <h3>Gilded Beauty</h3>
+        <p>Bridal, editorial, and special-effects makeup by award-winning artists.</p>
+        <div class="story-meta">
+          <span>Flatiron</span>
+          <span class="story-meta-divider"></span>
+          <span>0.7 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status book">Book ahead</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&h=900&q=80" alt="Law office" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Lawyer Firm</span>
+        <h3>Stone & Ridge</h3>
+        <p>Corporate law, intellectual property, and civil litigation with 20+ years experience.</p>
+        <div class="story-meta">
+          <span>Financial District</span>
+          <span class="story-meta-divider"></span>
+          <span>1.0 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status appoint">By appointment</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1562962230-16e4623d36e6?auto=format&fit=crop&w=600&h=900&q=80" alt="Tattoo" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Tattoo Studio</span>
+        <h3>Ink & Needle</h3>
+        <p>Custom tattoo designs, fine-line, neo-traditional, and cover-ups by guest artists.</p>
+        <div class="story-meta">
+          <span>Lower East Side</span>
+          <span class="story-meta-divider"></span>
+          <span>0.6 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status live">Live now</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=600&h=900&q=80" alt="Restaurant" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Restaurant</span>
+        <h3>Amaro Table</h3>
+        <p>Farm-to-table Italian with a rooftop terrace and sunset views over the skyline.</p>
+        <div class="story-meta">
+          <span>East Village</span>
+          <span class="story-meta-divider"></span>
+          <span>0.9 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status book">Fully booked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RADAR MAP -->
+<section class="section radar-section" id="radar">
+  <div class="section-label">Live Radar</div>
+  <h2 class="section-title" style="margin-bottom:12px">See what's <span class="text-gradient">nearby</span></h2>
+  <p class="radar-sub">Real-time neighborhood activity — tap any hotspot to see what's happening around you.</p>
+  <div class="radar-selectors-row" id="radar-selectors">
+    <div class="radar-selector active" data-target="greenwich">
+      <div class="radar-sel-dot" style="background:#2DE3B0"></div>
+      <div class="radar-sel-info">
+        <div class="radar-sel-name">Greenwich Village</div>
+        <div class="radar-sel-addr">Bloom & Petal · 0.4 mi</div>
+      </div>
+      <span class="radar-sel-status" style="color:#2DE3B0">● Live</span>
+    </div>
+    <div class="radar-selector" data-target="flatiron">
+      <div class="radar-sel-dot" style="background:#E84B95"></div>
+      <div class="radar-sel-info">
+        <div class="radar-sel-name">Flatiron District</div>
+        <div class="radar-sel-addr">Gilded Beauty · 0.7 mi</div>
+      </div>
+      <span class="radar-sel-status" style="color:#E84B95">● Active</span>
+    </div>
+    <div class="radar-selector" data-target="chelsea">
+      <div class="radar-sel-dot" style="background:#F59E0B"></div>
+      <div class="radar-sel-info">
+        <div class="radar-sel-name">Chelsea Market</div>
+        <div class="radar-sel-addr">Golden Crumb Bakery · 0.6 mi</div>
+      </div>
+      <span class="radar-sel-status" style="color:#F59E0B">● Busy</span>
+    </div>
+  </div>
+  <div class="radar-board-wrap">
+    <div class="radar-board" id="radar-board">
+      <div class="radar-grid"></div>
+      <div class="radar-sweep"></div>
+      <div class="radar-hotspot radar-hs-greenwich" data-id="greenwich">
+        <div class="radar-hs-ring"></div>
+        <div class="radar-hs-core" style="background:#2DE3B0"></div>
+        <div class="radar-hs-tooltip">Bloom & Petal <span>0.4 mi</span></div>
+      </div>
+      <div class="radar-hotspot radar-hs-flatiron" data-id="flatiron">
+        <div class="radar-hs-ring"></div>
+        <div class="radar-hs-core" style="background:#E84B95"></div>
+        <div class="radar-hs-tooltip">Gilded Beauty <span>0.7 mi</span></div>
+      </div>
+      <div class="radar-hotspot radar-hs-chelsea" data-id="chelsea">
+        <div class="radar-hs-ring"></div>
+        <div class="radar-hs-core" style="background:#F59E0B"></div>
+        <div class="radar-hs-tooltip">Golden Crumb <span>0.6 mi</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="section testimonials-section" id="manifesto">
+  <div class="section-label">Our vision</div>
+  <div class="section-header">
+    <h2 class="section-title">Your city has a <span class="text-gradient">pulse</span></h2>
+    <p class="section-sub">We believe the best experiences are hiding in plain sight — a block from your door, a street you've never turned down, a face you haven't met yet.</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars" style="color:var(--color-cyan);font-size:28px;letter-spacing:0">🌍</div>
+      <p class="testimonial-text" style="font-style:normal;font-weight:400;color:rgba(255,255,255,0.8);font-size:15px">Local isn't a filter — it's the whole point. We're building a map of what matters, curated by the people who live there, not algorithms miles away.</p>
+      <div style="margin-top:20px;font-size:12px;color:var(--color-cyan);font-weight:600">Discover the unseen</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars" style="color:var(--color-cyan);font-size:28px;letter-spacing:0">🤝</div>
+      <p class="testimonial-text" style="font-style:normal;font-weight:400;color:rgba(255,255,255,0.8);font-size:15px">Every corner store, hidden café, and home studio has a story. We give them the tools to share it live — so you walk in knowing exactly what awaits.</p>
+      <div style="margin-top:20px;font-size:12px;color:var(--color-accent);font-weight:600">Support real people</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars" style="color:var(--color-cyan);font-size:28px;letter-spacing:0">✨</div>
+      <p class="testimonial-text" style="font-style:normal;font-weight:400;color:rgba(255,255,255,0.8);font-size:15px">Serendipity shouldn't require a plane ticket. We're building the tool that makes your own neighbourhood feel new again — every single day.</p>
+      <div style="margin-top:20px;font-size:12px;color:#FBBF24;font-weight:600">Find your next favourite place</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="cta-section" id="cta">
+  <div class="cta-bg">
+    <div class="cta-grid"></div>
+    <div class="cta-glow-1"></div>
+    <div class="cta-glow-2"></div>
+  </div>
+  <div class="cta-content">
+    <div class="cta-logo">
+      <img src="/hippoplot-logo.jpg" alt="HippoPlot">
+    </div>
+    <h2 class="cta-title">Your city is <span class="text-gradient">waiting</span></h2>
+    <p class="cta-sub">Download HippoPlot free. Discover what's local, what's live, and what's worth your time.</p>
+    <div class="cta-form">
+      <div class="cta-toggle">
+        <button class="cta-toggle-btn active">Personal</button>
+        <button class="cta-toggle-btn">Business</button>
+      </div>
+      <div class="cta-input-row">
+        <input type="email" placeholder="Enter your email address" id="cta-email">
+        <button id="cta-submit">Get early access</button>
+      </div>
+      <div class="cta-success" id="cta-success">You're on the list! We'll be in touch.</div>
+    </div>
+    <div class="cta-social-proof">
+      <div class="cta-avatars" id="cta-avatars"></div>
+      <span>Join <strong id="cta-counter">2,849</strong> others on the waitlist</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-bg">
+    <div class="footer-glow"></div>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="footer-logo" href="#">
+        <div class="footer-logo-mark">
+          <img src="/hippoplot-logo.jpg" alt="HippoPlot">
+        </div>
+        <span>Hippo<span class="nav-logo-accent">Plot</span></span>
+      </a>
+      <p>Discover what's local, what's live, and what's worth your time. HippoPlot maps your neighbourhood like never before.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Twitter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" aria-label="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">How it works</a>
+        <a href="#">Pricing</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Press</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 HippoPlot. All rights reserved.</span>
+  </div>
+</footer>
+
+</body>
+</html>
