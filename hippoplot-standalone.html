@@ -1,0 +1,2381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HippoPlot — Everything Local</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+:root {
+  --color-brand-900: #0B0D1A;
+  --color-brand-800: #11132B;
+  --color-brand-700: #191B2E;
+  --color-accent: #E84B95;
+  --color-accent-hover: #d03e82;
+  --color-primary: #4A9BE8;
+  --color-cyan: #00d9ff;
+  --color-surface: rgba(255,255,255,0.03);
+  --color-surface-hover: rgba(255,255,255,0.06);
+  --color-muted: #6B7280;
+  --color-border: rgba(255,255,255,0.06);
+  --color-border-hover: rgba(255,255,255,0.12);
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-body: 'Inter', sans-serif;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: #0B0D1A;
+  color: rgba(255,255,255,0.85);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  line-height: 1.6;
+}
+::selection { background: rgba(232,75,149,0.3); color: #fff; }
+.text-cyan { color: var(--color-cyan); }
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-cyan), var(--color-primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; inset: 0 0 auto; z-index: 200;
+  background: rgba(11,13,26,0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.3s;
+}
+nav.scrolled {
+  background: rgba(11,13,26,0.95);
+  border-bottom-color: rgba(255,255,255,0.08);
+}
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 32px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: #fff;
+}
+.nav-logo-mark {
+  width: 34px; height: 34px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-cyan));
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 14px;
+  color: #fff;
+}
+.nav-logo span {
+  font-family: var(--font-display);
+  font-weight: 800; font-size: 18px;
+  letter-spacing: -0.3px;
+}
+.nav-logo-accent { color: var(--color-cyan); }
+.nav-links { display: flex; gap: 32px; list-style: none; }
+.nav-links a {
+  font-size: 13.5px;
+  color: rgba(255,255,255,0.5);
+  text-decoration: none;
+  transition: color 0.2s;
+  font-weight: 400;
+  letter-spacing: 0.2px;
+}
+.nav-links a:hover { color: #fff; }
+.nav-right { display: flex; gap: 10px; align-items: center; }
+.n-ghost {
+  height: 36px; padding: 0 18px; border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+  background: transparent;
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer; transition: all 0.2s;
+}
+.n-ghost:hover { border-color: rgba(255,255,255,0.2); color: #fff; }
+.n-solid {
+  height: 36px; padding: 0 18px; border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, var(--color-accent), #d03e82);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.n-solid:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,75,149,0.3); }
+.nav-mobile-toggle { display: none; flex-direction: column; gap: 4px; background: none; border: none; cursor: pointer; padding: 4px; }
+.nav-mobile-toggle span { display: block; width: 20px; height: 2px; background: rgba(255,255,255,0.6); border-radius: 2px; transition: all 0.3s; }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  padding: 140px 40px 80px;
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+}
+.hero-bg-layer {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.hero-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.hero-glow {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+.hero-glow-1 {
+  top: -200px; right: -100px;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(232,75,149,0.12), transparent 70%);
+}
+.hero-glow-2 {
+  bottom: -150px; left: -100px;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(74,155,232,0.1), transparent 70%);
+}
+.hero-glow-3 {
+  bottom: 100px; right: 50px;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(0,217,255,0.06), transparent 70%);
+}
+.hero-orbs { position: absolute; inset: 0; pointer-events: none; overflow: hidden; }
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+}
+.orb-1 {
+  width: 300px; height: 300px;
+  background: rgba(232,75,149,0.04);
+  top: 10%; left: -5%;
+  animation: orbFloat 12s ease-in-out infinite;
+}
+.orb-2 {
+  width: 250px; height: 250px;
+  background: rgba(0,217,255,0.03);
+  bottom: 20%; right: 10%;
+  animation: orbFloat 15s ease-in-out infinite reverse;
+}
+@keyframes orbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25% { transform: translate(30px, -20px) scale(1.05); }
+  50% { transform: translate(10px, 30px) scale(0.95); }
+  75% { transform: translate(-20px, -10px) scale(1.02); }
+}
+.hero-content { position: relative; z-index: 2; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 18px 6px 8px;
+  border-radius: 100px;
+  background: rgba(0,217,255,0.06);
+  border: 1px solid rgba(0,217,255,0.15);
+  font-size: 12px;
+  color: var(--color-cyan);
+  font-weight: 500;
+  margin-bottom: 28px;
+}
+.badge-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  animation: badgePulse 2s ease-in-out infinite;
+}
+@keyframes badgePulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.5); }
+}
+h1 {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(44px, 7vw, 88px);
+  line-height: 1.0;
+  letter-spacing: -3px;
+  margin-bottom: 20px;
+}
+.h1-line { display: block; }
+.hero-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.7;
+  max-width: 480px;
+  margin-bottom: 36px;
+  font-weight: 300;
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 48px;
+}
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--color-accent), #c73d76);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.3s;
+  border: none;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(232,75,149,0.35);
+}
+.btn-ghost {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.5);
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  background: rgba(255,255,255,0.03);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+.btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: #fff; background: rgba(255,255,255,0.06); }
+.hero-stats {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.hero-stat { text-align: left; }
+.hero-stat-num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.hero-stat-suffix { font-size: 20px; color: var(--color-cyan); font-weight: 700; }
+.hero-stat-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 2px;
+  font-weight: 300;
+}
+.hero-stat-divider {
+  width: 1px;
+  height: 32px;
+  background: rgba(255,255,255,0.06);
+}
+
+/* ── HERO MOCKUP ── */
+.hero-mockup {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+}
+.mockup-chassis {
+  width: 320px;
+  height: 640px;
+  border-radius: 44px;
+  background: #1E202A;
+  padding: 12px;
+  box-shadow:
+    inset 0 0 4px rgba(255,255,255,0.1),
+    0 32px 80px rgba(0,0,0,0.5),
+    0 8px 32px rgba(0,0,0,0.3);
+  position: relative;
+}
+.mockup-notch {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 110px;
+  height: 24px;
+  background: #1E202A;
+  border-radius: 0 0 16px 16px;
+  z-index: 10;
+}
+.mockup-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 34px;
+  overflow: hidden;
+  background: #0F1117;
+  position: relative;
+}
+.mockup-reel-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  border-radius: 34px;
+}
+.mockup-reel-slide {
+  position: absolute;
+  inset: 0;
+  transform: translateY(100%);
+  transition: transform 0.55s cubic-bezier(.45,.05,.15,1);
+}
+.mockup-reel-slide.active { transform: translateY(0); }
+.mockup-reel-slide img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.mockup-reel-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 45%, rgba(0,0,0,0.8) 100%);
+  pointer-events: none;
+}
+.mockup-reel-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 16px 14px 14px;
+  z-index: 2;
+}
+.mockup-reel-tag {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: rgba(232,75,149,0.25);
+  border: 1px solid rgba(232,75,149,0.3);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #fff;
+  margin-bottom: 6px;
+}
+.mockup-reel-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.3px;
+  margin-bottom: 2px;
+}
+.mockup-reel-desc {
+  font-size: 10px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.5;
+  max-width: 220px;
+  margin-bottom: 8px;
+}
+.mockup-reel-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 9.5px;
+  color: rgba(255,255,255,0.45);
+  flex-wrap: wrap;
+}
+.mockup-reel-icon { font-size: 8px; }
+.mockup-reel-status { font-weight: 500; font-size: 9px; }
+.mockup-reel-status.live { color: #2DE3B0; }
+.mockup-reel-status.book { color: var(--color-accent); }
+.mockup-reel-status.appoint { color: var(--color-primary); }
+.mockup-reel-progress {
+  position: absolute;
+  top: 10px; left: 10px; right: 10px;
+  z-index: 5;
+  display: flex;
+  gap: 4px;
+}
+.mockup-reel-progress .rp-bar {
+  flex: 1;
+  height: 2.5px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  overflow: hidden;
+}
+.mockup-reel-progress .rp-fill {
+  height: 100%;
+  width: 0%;
+  background: #fff;
+  border-radius: 2px;
+}
+.mockup-reel-progress .rp-bar.active .rp-fill {
+  animation: mockupReelProgress 4s linear forwards;
+}
+@keyframes mockupReelProgress {
+  from { width: 0% }
+  to { width: 100% }
+}
+.mockup-reel-side {
+  position: absolute;
+  right: 8px;
+  bottom: 90px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+.mockup-reel-side-btn-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.mockup-reel-side-btn {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 11px;
+}
+.mockup-reel-side-btn:hover {
+  background: rgba(232,75,149,0.5);
+  transform: scale(1.1);
+}
+.mockup-reel-side-label {
+  font-size: 8px;
+  color: rgba(255,255,255,0.45);
+  text-align: center;
+  line-height: 1.2;
+}
+.mockup-float {
+  position: absolute;
+  z-index: 150;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+.mockup-float-live {
+  top: 60px;
+  left: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(239,68,68,0.15);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(239,68,68,0.3);
+  font-size: 11px;
+  font-weight: 700;
+  color: #EF4444;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mockup-float-dot-red {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #EF4444;
+  flex-shrink: 0;
+}
+.mockup-float-watching {
+  top: 120px;
+  right: 24px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255,255,255,0.1);
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mockup-float-eye, .mockup-float-icon {
+  flex-shrink: 0;
+}
+.mockup-float-plans {
+  top: 258px;
+  left: 44px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(245,158,11,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(245,158,11,0.25);
+  font-size: 11px;
+  font-weight: 600;
+  color: #FBBF24;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mockup-float-chat {
+  top: 188px;
+  right: 49px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(16,185,129,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(16,185,129,0.25);
+  font-size: 11px;
+  font-weight: 600;
+  color: #34D399;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.mockup-float-explore {
+  top: 185px;
+  left: 59px;
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(139,92,246,0.12);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(139,92,246,0.25);
+  font-size: 11px;
+  font-weight: 600;
+  color: #A78BFA;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+@media (max-width: 1024px) {
+  .mockup-float-live { left: 10px; }
+  .mockup-float-watching { right: 10px; }
+  .mockup-float-plans { left: 10px; bottom: 60px; top: auto; }
+  .mockup-float-chat { right: 10px; bottom: 110px; top: auto; }
+  .mockup-float-explore { left: 10px; top: auto; bottom: 160px; }
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.01);
+}
+.stats-bar-inner {
+  max-width: 1280px; margin: 0 auto;
+  padding: 32px 40px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 0;
+}
+.stats-bar-item {
+  text-align: center;
+  padding: 0 40px;
+  flex: 1;
+}
+.stats-bar-num {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+.stats-bar-suffix {
+  font-size: 22px;
+  color: var(--color-cyan);
+  font-weight: 700;
+  margin-left: 1px;
+}
+.stats-bar-label {
+  display: block;
+  font-size: 12px;
+  color: rgba(255,255,255,0.35);
+  margin-top: 4px;
+  font-weight: 300;
+}
+.stats-bar-divider {
+  width: 1px;
+  height: 36px;
+  background: rgba(255,255,255,0.06);
+  flex-shrink: 0;
+}
+
+/* ── TICKER ── */
+.ticker-wrapper {
+  background: #111218;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+  overflow: hidden;
+  padding: 14px 0;
+}
+.ticker-track {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  width: max-content;
+  animation: tickerLoop 30s linear infinite;
+  will-change: transform;
+}
+.ticker-item {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.ticker-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+@keyframes tickerLoop {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+/* ── SECTIONS ── */
+.section {
+  padding: 120px 40px;
+  max-width: 1280px;
+  margin: 0 auto;
+  position: relative;
+}
+.section-label {
+  display: inline-flex;
+  padding: 5px 14px;
+  border-radius: 100px;
+  background: rgba(0,217,255,0.06);
+  border: 1px solid rgba(0,217,255,0.1);
+  font-size: 11px;
+  color: var(--color-cyan);
+  font-weight: 500;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+}
+.section-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  margin-bottom: 56px;
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  line-height: 1.05;
+  color: #fff;
+}
+.section-sub {
+  font-size: 15px;
+  color: rgba(255,255,255,0.4);
+  max-width: 400px;
+  line-height: 1.7;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+/* ── FEATURES GRID ── */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.feature-card {
+  position: relative;
+  padding: 32px 28px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.4s;
+  overflow: hidden;
+}
+.feature-card-glow {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.4s;
+  pointer-events: none;
+  border-radius: 16px;
+}
+.feature-card:hover { transform: translateY(-4px); border-color: rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); }
+.feature-card:hover .feature-card-glow {
+  opacity: 1;
+  background: radial-gradient(ellipse at 50% 0%, rgba(74,155,232,0.06) 0%, transparent 70%);
+}
+.feature-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px;
+}
+.fi-blue { background: rgba(74,155,232,0.08); border: 1px solid rgba(74,155,232,0.12); color: #4A9BE8; }
+.fi-pink { background: rgba(232,75,149,0.08); border: 1px solid rgba(232,75,149,0.12); color: #E84B95; }
+.fi-purple { background: rgba(139,92,246,0.08); border: 1px solid rgba(139,92,246,0.12); color: #8B5CF6; }
+.fi-teal { background: rgba(20,184,166,0.08); border: 1px solid rgba(20,184,166,0.12); color: #14B8A6; }
+.fi-amber { background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.12); color: #F59E0B; }
+.fi-green { background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.12); color: #10B981; }
+.feature-card h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 8px;
+  letter-spacing: -0.2px;
+}
+.feature-card p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.65;
+  font-weight: 300;
+}
+
+/* ── DISCOVER ── */
+.discover-section {
+  position: relative;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.discover-bg {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.discover-glow {
+  position: absolute;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 400px;
+  background: radial-gradient(ellipse, rgba(0,217,255,0.03) 0%, transparent 70%);
+}
+.discover-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.discover-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  transition: all 0.4s;
+}
+.discover-card:hover {
+  transform: translateY(-6px);
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+}
+.discover-card-img {
+  position: relative;
+  height: 220px;
+  overflow: hidden;
+}
+.discover-card-img img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+.discover-card:hover .discover-card-img img { transform: scale(1.05); }
+.discover-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 50%, rgba(11,13,26,0.9) 100%);
+  z-index: 1;
+}
+.discover-card-body {
+  padding: 20px;
+  position: relative;
+}
+.discover-tag {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: rgba(232,75,149,0.15);
+  border: 1px solid rgba(232,75,149,0.2);
+  color: #E84B95;
+  margin-bottom: 8px;
+}
+.discover-card-body h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+  letter-spacing: -0.2px;
+}
+.discover-rating {
+  font-size: 12px;
+  color: #F59E0B;
+  margin-bottom: 8px;
+}
+.discover-rating span { color: rgba(255,255,255,0.4); font-weight: 400; font-size: 12px; }
+.discover-card-body p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.55;
+  margin-bottom: 12px;
+  font-weight: 300;
+}
+.discover-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.3);
+  padding-top: 12px;
+  border-top: 1px solid rgba(255,255,255,0.04);
+}
+.discover-status {
+  font-weight: 500;
+  font-size: 11px;
+}
+.discover-status.open { color: #2DE3B0; }
+.discover-status.event { color: #F59E0B; }
+
+/* ── STORIES SECTION ── */
+.stories-section {
+  padding: 120px 40px;
+  max-width: 1280px;
+  margin: 0 auto;
+}
+.stories-track {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.story-card {
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.04);
+  background: rgba(255,255,255,0.02);
+  transition: all 0.4s;
+}
+.story-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.1);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+}
+.story-media {
+  position: relative;
+  height: 280px;
+  overflow: hidden;
+}
+.story-media img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+.story-card:hover .story-media img { transform: scale(1.05); }
+.story-gradient {
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(11,13,26,0.95) 100%);
+  z-index: 1;
+}
+.story-progress {
+  position: absolute;
+  top: 8px; left: 8px; right: 8px;
+  height: 2px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 2px;
+  overflow: hidden;
+  z-index: 2;
+}
+.story-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--color-cyan);
+  border-radius: 2px;
+  transition: width 0.1s linear;
+}
+.story-card.visible .story-progress-fill { width: 100%; transition: width 3s linear; }
+.story-body {
+  padding: 20px;
+  position: relative;
+}
+.story-tag {
+  display: inline-flex;
+  padding: 3px 10px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  background: rgba(0,217,255,0.1);
+  border: 1px solid rgba(0,217,255,0.15);
+  color: var(--color-cyan);
+  margin-bottom: 8px;
+}
+.story-body h3 {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  letter-spacing: -0.2px;
+}
+.story-body p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.6;
+  margin-bottom: 12px;
+  font-weight: 300;
+}
+.story-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.3);
+}
+.story-meta-divider {
+  width: 3px; height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+}
+.story-status { font-weight: 500; font-size: 11px; }
+.story-status.live { color: #2DE3B0; }
+.story-status.book { color: var(--color-accent); }
+.story-status.appoint { color: var(--color-primary); }
+
+/* ── RADAR MAP ── */
+.radar-section {
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.radar-section .section-header { margin-bottom: 36px; }
+.radar-sub {
+  font-size: 14px;
+  color: rgba(255,255,255,0.4);
+  line-height: 1.7;
+  font-weight: 300;
+  margin-bottom: 36px;
+  max-width: 480px;
+}
+.radar-selectors-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  max-width: 960px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.radar-selectors-row .radar-selector { flex: 1; }
+.radar-board-wrap {
+  max-width: 960px;
+  margin: 0 auto;
+}
+.radar-selector {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.radar-selector:hover {
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.1);
+}
+.radar-selector.active {
+  background: rgba(0,217,255,0.04);
+  border-color: rgba(0,217,255,0.15);
+}
+.radar-sel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  box-shadow: 0 0 0 3px rgba(255,255,255,0.04);
+}
+.radar-sel-info { flex: 1; }
+.radar-sel-name {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: -0.1px;
+}
+.radar-sel-addr {
+  font-size: 11px;
+  color: rgba(255,255,255,0.3);
+  margin-top: 1px;
+  font-weight: 300;
+}
+.radar-sel-status {
+  font-size: 11px;
+  font-weight: 500;
+}
+.radar-board {
+  position: relative;
+  border-radius: 16px;
+  background: #0B0D1A;
+  border: 1px solid rgba(255,255,255,0.04);
+  overflow: hidden;
+  width: 100%;
+  min-height: 380px;
+}
+.radar-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+.radar-sweep {
+  position: absolute;
+  inset: -60%;
+  border-radius: 50%;
+  background: conic-gradient(from 0deg, transparent 0deg, rgba(0,217,255,0.1) 30deg, transparent 60deg, transparent 360deg);
+  animation: sweepRadar 6s linear infinite;
+  pointer-events: none;
+}
+@keyframes sweepRadar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.radar-hotspot {
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+}
+.radar-hs-greenwich { top: 30%; left: 35%; }
+.radar-hs-flatiron { top: 55%; left: 60%; }
+.radar-hs-chelsea { top: 40%; left: 75%; }
+.radar-hs-ring {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 40px; height: 40px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 2px solid rgba(45,227,176,0.3);
+  animation: pingHotspot 2.5s ease-out infinite;
+  pointer-events: none;
+}
+.radar-hs-flatiron .radar-hs-ring { border-color: rgba(232,75,149,0.3); }
+.radar-hs-chelsea .radar-hs-ring { border-color: rgba(245,158,11,0.3); }
+@keyframes pingHotspot {
+  0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  60% { transform: translate(-50%, -50%) scale(2.5); opacity: 0; }
+}
+.radar-hs-core {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  position: relative;
+  z-index: 3;
+  box-shadow: 0 0 12px rgba(45,227,176,0.3);
+}
+.radar-hs-flatiron .radar-hs-core { box-shadow: 0 0 12px rgba(232,75,149,0.3); }
+.radar-hs-chelsea .radar-hs-core { box-shadow: 0 0 12px rgba(245,158,11,0.3); }
+.radar-hs-tooltip {
+  position: absolute;
+  top: -36px;
+  left: 50%;
+  transform: translateX(-50%) scale(0.9);
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(11,13,26,0.9);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.06);
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+  opacity: 0;
+  transition: all 0.2s;
+  pointer-events: none;
+}
+.radar-hs-tooltip span {
+  color: rgba(255,255,255,0.4);
+  margin-left: 4px;
+}
+.radar-hotspot:hover .radar-hs-tooltip {
+  opacity: 1;
+  transform: translateX(-50%) scale(1);
+}
+
+/* ── MANIFESTO ── */
+.testimonials-section {
+  border-top: 1px solid rgba(255,255,255,0.04);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.testimonials-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.testimonial-card {
+  padding: 32px 28px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.04);
+  transition: all 0.4s;
+}
+.testimonial-card:hover {
+  border-color: rgba(255,255,255,0.1);
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.2);
+}
+.testimonial-stars { font-size: 14px; color: #F59E0B; margin-bottom: 16px; letter-spacing: 2px; }
+.testimonial-text {
+  font-size: 14px;
+  color: rgba(255,255,255,0.65);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  font-weight: 300;
+  font-style: italic;
+}
+
+/* ── CTA ── */
+.cta-section {
+  padding: 120px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+.cta-bg {
+  position: absolute; inset: 0;
+  pointer-events: none;
+}
+.cta-grid {
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+.cta-glow-1 {
+  position: absolute;
+  top: -200px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 500px;
+  background: radial-gradient(ellipse, rgba(232,75,149,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-glow-2 {
+  position: absolute;
+  bottom: -150px; left: 50%; transform: translateX(-50%);
+  width: 400px; height: 400px;
+  background: radial-gradient(ellipse, rgba(0,217,255,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.cta-content {
+  position: relative;
+  z-index: 1;
+  max-width: 520px;
+  margin: 0 auto;
+}
+.cta-logo {
+  width: 56px; height: 56px;
+  border-radius: 16px;
+  margin: 0 auto 24px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-cyan));
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 22px;
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.cta-title {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 52px);
+  font-weight: 800;
+  letter-spacing: -1.5px;
+  color: #fff;
+  margin-bottom: 16px;
+  line-height: 1.1;
+}
+.cta-sub {
+  font-size: 16px;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 40px;
+  line-height: 1.7;
+  font-weight: 300;
+}
+.cta-form {
+  max-width: 440px;
+  margin: 0 auto;
+}
+.cta-toggle {
+  display: flex;
+  gap: 4px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 8px;
+  padding: 3px;
+  margin-bottom: 12px;
+}
+.cta-toggle-btn {
+  flex: 1;
+  padding: 9px 16px;
+  border-radius: 6px;
+  border: none;
+  background: transparent;
+  color: rgba(255,255,255,0.3);
+  font-family: var(--font-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.cta-toggle-btn.active {
+  background: rgba(255,255,255,0.08);
+  color: #fff;
+  font-weight: 500;
+}
+.cta-input-row {
+  display: flex;
+  gap: 8px;
+}
+.cta-input-row input {
+  flex: 1;
+  padding: 14px 18px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.03);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  outline: none;
+  transition: border 0.2s;
+}
+.cta-input-row input::placeholder { color: rgba(255,255,255,0.2); }
+.cta-input-row input:focus { border-color: var(--color-cyan); }
+.cta-input-row button {
+  padding: 14px 24px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, var(--color-accent), #c73d76);
+  color: #fff;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.cta-input-row button:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(232,75,149,0.3); }
+.cta-success {
+  display: none;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: rgba(45,227,176,0.06);
+  border: 1px solid rgba(45,227,176,0.1);
+  color: #2DE3B0;
+  font-size: 13px;
+  margin-top: 12px;
+}
+.cta-social-proof {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 24px;
+  font-size: 13px;
+  color: rgba(255,255,255,0.3);
+}
+.cta-social-proof strong { color: rgba(255,255,255,0.6); font-weight: 500; }
+.cta-avatars {
+  display: flex;
+}
+.cta-avatars img {
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 2px solid #0B0D1A;
+  margin-left: -8px;
+  object-fit: cover;
+}
+.cta-avatars img:first-child { margin-left: 0; }
+
+/* ── FOOTER ── */
+footer {
+  position: relative;
+  border-top: 1px solid rgba(255,255,255,0.04);
+  background: #070814;
+}
+.footer-bg {
+  position: absolute; inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+.footer-glow {
+  position: absolute;
+  top: -100px; left: 50%; transform: translateX(-50%);
+  width: 400px; height: 200px;
+  background: radial-gradient(ellipse, rgba(0,217,255,0.02) 0%, transparent 70%);
+}
+.footer-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 64px 40px 40px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  position: relative;
+  z-index: 1;
+}
+.footer-logo {
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none; color: #fff;
+  margin-bottom: 16px;
+}
+.footer-logo-mark {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, var(--color-primary), var(--color-cyan));
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 13px;
+  color: #fff;
+}
+.footer-logo span {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 17px;
+}
+.footer-brand p {
+  font-size: 13px;
+  color: rgba(255,255,255,0.25);
+  line-height: 1.7;
+  max-width: 300px;
+  font-weight: 300;
+}
+.footer-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+.footer-social a {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.04);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.2);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.footer-social a:hover {
+  border-color: rgba(0,217,255,0.3);
+  color: var(--color-cyan);
+}
+.footer-cols {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 48px;
+}
+.footer-col h4 {
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+.footer-col a {
+  display: block;
+  font-size: 13px;
+  color: rgba(255,255,255,0.25);
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: color 0.2s;
+  font-weight: 300;
+}
+.footer-col a:hover { color: rgba(255,255,255,0.5); }
+.footer-bottom {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 20px 40px;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  position: relative;
+  z-index: 1;
+}
+.footer-bottom span {
+  font-size: 12px;
+  color: rgba(255,255,255,0.15);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .hero { grid-template-columns: 1fr; gap: 40px; padding: 120px 24px 60px; }
+  .hero-mockup { order: -1; max-width: 220px; margin: 0 auto; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .discover-grid { grid-template-columns: repeat(2, 1fr); }
+  .stories-track { grid-template-columns: repeat(2, 1fr); }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .footer-inner { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+@media (max-width: 768px) {
+  .nav-links, .nav-right { display: none; }
+  .nav-mobile-toggle { display: flex; }
+  .nav-inner { padding: 0 20px; }
+  .section { padding: 80px 20px; }
+  .section-header { flex-direction: column; gap: 12px; margin-bottom: 40px; }
+  .section-sub { max-width: none; }
+  .hero { padding: 100px 20px 48px; }
+  .hero-actions { flex-direction: column; }
+  .hero-stats { gap: 16px; flex-wrap: wrap; }
+  .hero-stat-num { font-size: 22px; }
+  .features-grid { grid-template-columns: 1fr; gap: 12px; }
+  .discover-grid { grid-template-columns: 1fr; gap: 14px; }
+  .stories-track { grid-template-columns: 1fr; gap: 14px; }
+  .stats-bar-inner { padding: 24px 20px; flex-wrap: wrap; gap: 12px; }
+  .stats-bar-item { padding: 0 16px; }
+  .stats-bar-num { font-size: 24px; }
+  .stats-bar-suffix { font-size: 18px; }
+  .cta-section { padding: 80px 20px; }
+  .cta-input-row { flex-direction: column; }
+  .footer-inner { grid-template-columns: 1fr; padding: 48px 20px 32px; gap: 24px; }
+  .footer-col h4 { margin-bottom: 12px; }
+  .footer-bottom { padding: 16px 20px; }
+  .footer-cols { grid-template-columns: 1fr 1fr; gap: 24px; }
+}
+@media (max-width: 480px) {
+  h1 { font-size: clamp(36px, 13vw, 44px); letter-spacing: -2px; }
+  .story-media { height: 200px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <a class="nav-logo" href="#">
+      <div class="nav-logo-mark">HP</div>
+      <span>Hippo<span class="nav-logo-accent">Plot</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#discover">Discover</a></li>
+      <li><a href="#stories">Stories</a></li>
+    </ul>
+    <div class="nav-right">
+      <button class="n-ghost">Log in</button>
+      <button class="n-solid">Get early access</button>
+    </div>
+    <button class="nav-mobile-toggle" id="mobile-toggle" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-bg-layer">
+    <div class="hero-grid"></div>
+    <div class="hero-glow hero-glow-1"></div>
+    <div class="hero-glow hero-glow-2"></div>
+    <div class="hero-glow hero-glow-3"></div>
+    <div class="hero-orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+    </div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-badge" id="hero-badge">
+      <span class="badge-dot"></span>
+      Now live in your neighbourhood
+    </div>
+    <h1 id="hero-headline">
+      <span class="h1-line">Everything</span>
+      <span class="h1-line"><span class="text-cyan">local.</span> Discovered</span>
+      <span class="h1-line">now.</span>
+    </h1>
+    <p class="hero-sub" id="hero-sub">HippoPlot maps the hidden gems, live updates, and local businesses around you — all in one place. Your city has never felt this close.</p>
+    <div class="hero-actions" id="hero-actions">
+      <a class="btn-primary" href="#cta">
+        <span>Join the waitlist</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <a class="btn-ghost" href="#features">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        See features
+      </a>
+    </div>
+    <div class="hero-stats" id="hero-stats">
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-target="2.8">0</span><span class="hero-stat-suffix">K+</span>
+        <span class="hero-stat-label">On the waitlist</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-target="30">0</span><span class="hero-stat-suffix">+</span>
+        <span class="hero-stat-label">Cities at launch</span>
+      </div>
+      <div class="hero-stat-divider"></div>
+      <div class="hero-stat">
+        <span class="hero-stat-num" data-target="1.2">0</span><span class="hero-stat-suffix">K</span>
+        <span class="hero-stat-label">Businesses interested</span>
+      </div>
+    </div>
+  </div>
+  <div class="hero-mockup" id="hero-mockup">
+    <div class="mockup-chassis">
+      <div class="mockup-notch"></div>
+      <div class="mockup-screen">
+        <div class="mockup-reel-progress" id="mockup-reel-progress"></div>
+        <div class="mockup-reel-container" id="mockup-reel">
+          <div class="mockup-reel-slide active" data-index="0">
+            <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&h=1066&q=80" alt="Flower shop" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Flower Store</div>
+              <div class="mockup-reel-name">Bloom & Petal</div>
+              <div class="mockup-reel-desc">Handcrafted bouquets, exotic orchids, and same-day delivery.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Greenwich Ave</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.4 mi</span>
+                <span class="mockup-reel-status live">● Open now</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="1">
+            <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&h=1066&q=80" alt="Makeup artist" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Makeup Artist</div>
+              <div class="mockup-reel-name">Gilded Beauty</div>
+              <div class="mockup-reel-desc">Bridal, editorial, and special-effects makeup by award-winning artists.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Flatiron</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.7 mi</span>
+                <span class="mockup-reel-status book">● Book ahead</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="2">
+            <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=600&h=1066&q=80" alt="Bakery" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Bakery</div>
+              <div class="mockup-reel-name">Golden Crumb</div>
+              <div class="mockup-reel-desc">Artisan sourdough, flaky croissants, and custom celebration cakes baked fresh daily.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Chelsea Market</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.6 mi</span>
+                <span class="mockup-reel-status live">● Open now</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="3">
+            <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?auto=format&fit=crop&w=600&h=1066&q=80" alt="Home studio" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Home Studio</div>
+              <div class="mockup-reel-name">Willow & Wool</div>
+              <div class="mockup-reel-desc">Handmade ceramics, woven textiles, and custom home decor crafted in a cozy home studio.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Park Slope</span>
+                <span><span class="mockup-reel-icon">📏</span> 0.3 mi</span>
+                <span class="mockup-reel-status live">● Open now</span>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-reel-slide" data-index="4">
+            <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&h=1066&q=80" alt="Lawyer" loading="lazy">
+            <div class="mockup-reel-gradient"></div>
+            <div class="mockup-reel-overlay">
+              <div class="mockup-reel-tag">Lawyer</div>
+              <div class="mockup-reel-name">Stone & Ridge</div>
+              <div class="mockup-reel-desc">Corporate law, intellectual property, and civil litigation with 20+ years of experience.</div>
+              <div class="mockup-reel-meta">
+                <span><span class="mockup-reel-icon">📍</span> Financial District</span>
+                <span><span class="mockup-reel-icon">📏</span> 1.0 mi</span>
+                <span class="mockup-reel-status appoint">● By appointment</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-reel-side">
+          <div class="mockup-reel-side-btn-wrap">
+            <button class="mockup-reel-side-btn">♥</button>
+            <span class="mockup-reel-side-label">2.4k</span>
+          </div>
+          <div class="mockup-reel-side-btn-wrap">
+            <button class="mockup-reel-side-btn">💬</button>
+            <span class="mockup-reel-side-label">89</span>
+          </div>
+          <div class="mockup-reel-side-btn-wrap">
+            <button class="mockup-reel-side-btn">↗</button>
+            <span class="mockup-reel-side-label">Share</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="mockup-float mockup-float-live">
+      <span class="mockup-float-dot-red"></span>
+      LIVE NOW
+    </div>
+    <div class="mockup-float mockup-float-watching">
+      <svg class="mockup-float-eye" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00D9FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+      2.4K watching
+    </div>
+    <div class="mockup-float mockup-float-plans">
+      <svg class="mockup-float-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      Make plans
+    </div>
+    <div class="mockup-float mockup-float-chat">
+      <svg class="mockup-float-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><path d="M8 10h.01M12 10h.01M16 10h.01"/></svg>
+      Chat now
+    </div>
+    <div class="mockup-float mockup-float-explore">
+      <svg class="mockup-float-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#8B5CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      Explore
+    </div>
+  </div>
+</section>
+
+<!-- STATS BAR -->
+<div class="stats-bar" id="stats-bar">
+  <div class="stats-bar-inner">
+    <div class="stats-bar-item">
+      <span class="stats-bar-num" data-target="2.8">0</span><span class="stats-bar-suffix">K+</span>
+      <span class="stats-bar-label">On the waitlist</span>
+    </div>
+    <div class="stats-bar-divider"></div>
+    <div class="stats-bar-item">
+      <span class="stats-bar-num" data-target="30">0</span><span class="stats-bar-suffix">+</span>
+      <span class="stats-bar-label">Cities at launch</span>
+    </div>
+    <div class="stats-bar-item">
+      <span class="stats-bar-num" data-target="1.2">0</span><span class="stats-bar-suffix">K</span>
+      <span class="stats-bar-label">Businesses interested</span>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker-wrapper">
+  <div class="ticker-track">
+    <div class="ticker-item">Boutique Cafés</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Home Studios</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Local Bakeries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Neighborhood Run Clubs</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Pop-up Galleries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Farmers Markets</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Vintage Shops</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Rooftop Bars</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Boutique Cafés</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Home Studios</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Local Bakeries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Neighborhood Run Clubs</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Pop-up Galleries</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Farmers Markets</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Vintage Shops</div>
+    <span class="ticker-dot"></span>
+    <div class="ticker-item">Rooftop Bars</div>
+    <span class="ticker-dot"></span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-label">Why HippoPlot</div>
+  <div class="section-header">
+    <h2 class="section-title">Built for your <span class="text-gradient">neighbourhood</span></h2>
+    <p class="section-sub">Everything happening locally — surfaced intelligently, updated live. Your city has never felt this close.</p>
+  </div>
+  <div class="features-grid" id="features-grid">
+    <div class="feature-card" data-delay="0">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-blue">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <h3>AI Gems</h3>
+      <p>Our AI surfaces the best hidden local spots tailored to your interests — cafes, events, and markets you'd never find alone.</p>
+    </div>
+    <div class="feature-card" data-delay="1">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-pink">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      </div>
+      <h3>Live updates</h3>
+      <p>Businesses post what's happening right now — free tables, fresh stock, tonight's special. You know the moment it matters.</p>
+    </div>
+    <div class="feature-card" data-delay="2">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-purple">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <h3>Hyper-local map</h3>
+      <p>A living map of everything nearby. Filter by vibe, category, or distance — no noise, just what's relevant to you.</p>
+    </div>
+    <div class="feature-card" data-delay="3">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-teal">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      </div>
+      <h3>Business profiles</h3>
+      <p>Full menus, photos, services, and real-time posts — everything a local business needs to be found and chosen.</p>
+    </div>
+    <div class="feature-card" data-delay="4">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-amber">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      </div>
+      <h3>Community events</h3>
+      <p>From popup markets to local meetups — discover what's on around you this weekend, in one tap.</p>
+    </div>
+    <div class="feature-card" data-delay="5">
+      <div class="feature-card-glow"></div>
+      <div class="feature-icon fi-pink">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      </div>
+      <h3>Smart discovery</h3>
+      <p>The more you explore, the smarter it gets — surfacing exactly the kind of places you'll love next.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DISCOVER -->
+<section class="section discover-section" id="discover">
+  <div class="discover-bg">
+    <div class="discover-glow"></div>
+  </div>
+  <div class="section-label">Explore</div>
+  <div class="section-header">
+    <h2 class="section-title">Discover your <span class="text-gradient">city</span></h2>
+    <p class="section-sub">Neighbourhoods come alive with HippoPlot. See what's happening around every corner.</p>
+  </div>
+  <div class="discover-grid" id="discover-grid">
+    <div class="discover-card">
+      <div class="discover-card-img">
+        <div class="discover-card-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=600&h=500&q=80" alt="Cafe" loading="lazy">
+      </div>
+      <div class="discover-card-body">
+        <span class="discover-tag">Cafe</span>
+        <h3>The Book Nook</h3>
+        <div class="discover-rating">★★★★★ <span>4.8</span></div>
+        <p>Specialty coffee, fresh pastries, and a quiet reading loft.</p>
+        <div class="discover-meta">
+          <span>0.3 mi</span>
+          <span class="discover-status open">Open now</span>
+        </div>
+      </div>
+    </div>
+    <div class="discover-card">
+      <div class="discover-card-img">
+        <div class="discover-card-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=600&h=500&q=80" alt="Market" loading="lazy">
+      </div>
+      <div class="discover-card-body">
+        <span class="discover-tag" style="background:rgba(74,155,232,0.15);color:#4A9BE8;border-color:rgba(74,155,232,0.25)">Market</span>
+        <h3>Sunday Farmers Market</h3>
+        <div class="discover-rating">★★★★★ <span>4.9</span></div>
+        <p>Local produce, artisan bread, organic honey, and handmade crafts.</p>
+        <div class="discover-meta">
+          <span>0.6 mi</span>
+          <span class="discover-status open">Open now</span>
+        </div>
+      </div>
+    </div>
+    <div class="discover-card">
+      <div class="discover-card-img">
+        <div class="discover-card-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&h=500&q=80" alt="Event" loading="lazy">
+      </div>
+      <div class="discover-card-body">
+        <span class="discover-tag" style="background:rgba(245,158,11,0.15);color:#F59E0B;border-color:rgba(245,158,11,0.25)">Event</span>
+        <h3>Jazz Night Live</h3>
+        <div class="discover-rating">★★★★★ <span>4.7</span></div>
+        <p>Weekly live jazz with local artists. Candlelit tables.</p>
+        <div class="discover-meta">
+          <span>1.2 mi</span>
+          <span class="discover-status event">Tonight 8pm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORIES -->
+<section class="stories-section" id="stories">
+  <div class="section-label">Local Stories</div>
+  <div class="section-header">
+    <h2 class="section-title">Your neighbourhood <span class="text-gradient">in motion</span></h2>
+    <p class="section-sub">A curated feed of local businesses and experiences — scroll through and discover what's nearby.</p>
+  </div>
+  <div class="stories-track" id="stories-track">
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&h=900&q=80" alt="Flower shop" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Flower Store</span>
+        <h3>Bloom & Petal</h3>
+        <p>Handcrafted bouquets, exotic orchids, and same-day delivery across the city.</p>
+        <div class="story-meta">
+          <span>Greenwich Ave</span>
+          <span class="story-meta-divider"></span>
+          <span>0.4 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status live">Live now</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=600&h=900&q=80" alt="Salon" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Hair Dresser</span>
+        <h3>Luxe Studio</h3>
+        <p>Precision cuts, balayage color, and luxury blowouts in a sunlit salon.</p>
+        <div class="story-meta">
+          <span>West Village</span>
+          <span class="story-meta-divider"></span>
+          <span>0.5 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status live">Live now</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1596462502278-27bfdc403348?auto=format&fit=crop&w=600&h=900&q=80" alt="Makeup" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Makeup Artist</span>
+        <h3>Gilded Beauty</h3>
+        <p>Bridal, editorial, and special-effects makeup by award-winning artists.</p>
+        <div class="story-meta">
+          <span>Flatiron</span>
+          <span class="story-meta-divider"></span>
+          <span>0.7 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status book">Book ahead</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=600&h=900&q=80" alt="Law office" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Lawyer Firm</span>
+        <h3>Stone & Ridge</h3>
+        <p>Corporate law, intellectual property, and civil litigation with 20+ years experience.</p>
+        <div class="story-meta">
+          <span>Financial District</span>
+          <span class="story-meta-divider"></span>
+          <span>1.0 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status appoint">By appointment</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1562962230-16e4623d36e6?auto=format&fit=crop&w=600&h=900&q=80" alt="Tattoo" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Tattoo Studio</span>
+        <h3>Ink & Needle</h3>
+        <p>Custom tattoo designs, fine-line, neo-traditional, and cover-ups by guest artists.</p>
+        <div class="story-meta">
+          <span>Lower East Side</span>
+          <span class="story-meta-divider"></span>
+          <span>0.6 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status live">Live now</span>
+        </div>
+      </div>
+    </div>
+    <div class="story-card">
+      <div class="story-media">
+        <div class="story-gradient"></div>
+        <img src="https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&w=600&h=900&q=80" alt="Restaurant" loading="lazy">
+        <div class="story-progress"><div class="story-progress-fill"></div></div>
+      </div>
+      <div class="story-body">
+        <span class="story-tag">Restaurant</span>
+        <h3>Amaro Table</h3>
+        <p>Farm-to-table Italian with a rooftop terrace and sunset views over the skyline.</p>
+        <div class="story-meta">
+          <span>East Village</span>
+          <span class="story-meta-divider"></span>
+          <span>0.9 mi away</span>
+          <span class="story-meta-divider"></span>
+          <span class="story-status book">Fully booked</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RADAR -->
+<section class="section radar-section" id="radar">
+  <div class="section-label">Live Radar</div>
+  <h2 class="section-title" style="margin-bottom:12px">See what's <span class="text-gradient">nearby</span></h2>
+  <p class="radar-sub">Real-time neighborhood activity — tap any hotspot to see what's happening around you.</p>
+  <div class="radar-selectors-row" id="radar-selectors">
+    <div class="radar-selector active" data-target="greenwich">
+      <div class="radar-sel-dot" style="background:#2DE3B0"></div>
+      <div class="radar-sel-info">
+        <div class="radar-sel-name">Greenwich Village</div>
+        <div class="radar-sel-addr">Bloom & Petal · 0.4 mi</div>
+      </div>
+      <span class="radar-sel-status" style="color:#2DE3B0">● Live</span>
+    </div>
+    <div class="radar-selector" data-target="flatiron">
+      <div class="radar-sel-dot" style="background:#E84B95"></div>
+      <div class="radar-sel-info">
+        <div class="radar-sel-name">Flatiron District</div>
+        <div class="radar-sel-addr">Gilded Beauty · 0.7 mi</div>
+      </div>
+      <span class="radar-sel-status" style="color:#E84B95">● Active</span>
+    </div>
+    <div class="radar-selector" data-target="chelsea">
+      <div class="radar-sel-dot" style="background:#F59E0B"></div>
+      <div class="radar-sel-info">
+        <div class="radar-sel-name">Chelsea Market</div>
+        <div class="radar-sel-addr">Golden Crumb Bakery · 0.6 mi</div>
+      </div>
+      <span class="radar-sel-status" style="color:#F59E0B">● Busy</span>
+    </div>
+  </div>
+  <div class="radar-board-wrap">
+    <div class="radar-board" id="radar-board">
+      <div class="radar-grid"></div>
+      <div class="radar-sweep"></div>
+      <div class="radar-hotspot radar-hs-greenwich" data-id="greenwich">
+        <div class="radar-hs-ring"></div>
+        <div class="radar-hs-core" style="background:#2DE3B0"></div>
+        <div class="radar-hs-tooltip">Bloom & Petal <span>0.4 mi</span></div>
+      </div>
+      <div class="radar-hotspot radar-hs-flatiron" data-id="flatiron">
+        <div class="radar-hs-ring"></div>
+        <div class="radar-hs-core" style="background:#E84B95"></div>
+        <div class="radar-hs-tooltip">Gilded Beauty <span>0.7 mi</span></div>
+      </div>
+      <div class="radar-hotspot radar-hs-chelsea" data-id="chelsea">
+        <div class="radar-hs-ring"></div>
+        <div class="radar-hs-core" style="background:#F59E0B"></div>
+        <div class="radar-hs-tooltip">Golden Crumb <span>0.6 mi</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MANIFESTO -->
+<section class="section testimonials-section" id="manifesto">
+  <div class="section-label">Our vision</div>
+  <div class="section-header">
+    <h2 class="section-title">Your city has a <span class="text-gradient">pulse</span></h2>
+    <p class="section-sub">We believe the best experiences are hiding in plain sight — a block from your door, a street you've never turned down, a face you haven't met yet.</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <div class="testimonial-stars" style="color:var(--color-cyan);font-size:28px;letter-spacing:0">🌍</div>
+      <p class="testimonial-text" style="font-style:normal;font-weight:400;color:rgba(255,255,255,0.8);font-size:15px">Local isn't a filter — it's the whole point. We're building a map of what matters, curated by the people who live there, not algorithms miles away.</p>
+      <div style="margin-top:20px;font-size:12px;color:var(--color-cyan);font-weight:600">Discover the unseen</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars" style="color:var(--color-cyan);font-size:28px;letter-spacing:0">🤝</div>
+      <p class="testimonial-text" style="font-style:normal;font-weight:400;color:rgba(255,255,255,0.8);font-size:15px">Every corner store, hidden café, and home studio has a story. We give them the tools to share it live — so you walk in knowing exactly what awaits.</p>
+      <div style="margin-top:20px;font-size:12px;color:var(--color-accent);font-weight:600">Support real people</div>
+    </div>
+    <div class="testimonial-card">
+      <div class="testimonial-stars" style="color:var(--color-cyan);font-size:28px;letter-spacing:0">✨</div>
+      <p class="testimonial-text" style="font-style:normal;font-weight:400;color:rgba(255,255,255,0.8);font-size:15px">Serendipity shouldn't require a plane ticket. We're building the tool that makes your own neighbourhood feel new again — every single day.</p>
+      <div style="margin-top:20px;font-size:12px;color:#FBBF24;font-weight:600">Find your next favourite place</div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="cta">
+  <div class="cta-bg">
+    <div class="cta-grid"></div>
+    <div class="cta-glow-1"></div>
+    <div class="cta-glow-2"></div>
+  </div>
+  <div class="cta-content">
+    <div class="cta-logo">HP</div>
+    <h2 class="cta-title">Your city is <span class="text-gradient">waiting</span></h2>
+    <p class="cta-sub">Download HippoPlot free. Discover what's local, what's live, and what's worth your time.</p>
+    <div class="cta-form">
+      <div class="cta-toggle">
+        <button class="cta-toggle-btn active">Personal</button>
+        <button class="cta-toggle-btn">Business</button>
+      </div>
+      <div class="cta-input-row">
+        <input type="email" placeholder="Enter your email address" id="cta-email">
+        <button id="cta-submit">Get early access</button>
+      </div>
+      <div class="cta-success" id="cta-success">You're on the list! We'll be in touch.</div>
+    </div>
+    <div class="cta-social-proof">
+      <div class="cta-avatars" id="cta-avatars"></div>
+      <span>Join <strong id="cta-counter">2,849</strong> others on the waitlist</span>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-bg">
+    <div class="footer-glow"></div>
+  </div>
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <a class="footer-logo" href="#">
+        <div class="footer-logo-mark">HP</div>
+        <span>Hippo<span class="nav-logo-accent">Plot</span></span>
+      </a>
+      <p>Discover what's local, what's live, and what's worth your time. HippoPlot maps your neighbourhood like never before.</p>
+      <div class="footer-social">
+        <a href="#" aria-label="Twitter">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+        </a>
+        <a href="#" aria-label="Instagram">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" aria-label="LinkedIn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-cols">
+      <div class="footer-col">
+        <h4>Product</h4>
+        <a href="#">Features</a>
+        <a href="#">How it works</a>
+        <a href="#">Pricing</a>
+        <a href="#">FAQ</a>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="#">About</a>
+        <a href="#">Blog</a>
+        <a href="#">Press</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-col">
+        <h4>Legal</h4>
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 HippoPlot. All rights reserved.</span>
+  </div>
+</footer>
+
+<script>
+// ── AVATARS ──
+const avatarUrls = [
+  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=64&h=64&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=64&h=64&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=64&h=64&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=64&h=64&fit=crop&crop=face',
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=64&h=64&fit=crop&crop=face',
+]
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]] }
+  return arr
+}
+function renderAvatars(containerId) {
+  const container = document.getElementById(containerId)
+  if (!container) return
+  const shuffled = shuffle([...avatarUrls])
+  container.innerHTML = shuffled.slice(0, 4).map(url => '<img src="' + url + '" alt="User" loading="lazy">').join('')
+}
+
+// ── MOCKUP REEL ──
+function initMockupReel() {
+  const container = document.getElementById('mockup-reel')
+  const progress = document.getElementById('mockup-reel-progress')
+  if (!container || !progress) return
+  const slides = container.querySelectorAll('.mockup-reel-slide')
+  slides.forEach(() => {
+    const bar = document.createElement('div')
+    bar.className = 'rp-bar'
+    bar.innerHTML = '<div class="rp-fill"></div>'
+    progress.appendChild(bar)
+  })
+  let reelIndex = 0
+  let reelTimer
+  const bars = progress.querySelectorAll('.rp-bar')
+  function advanceReel() {
+    const current = slides[reelIndex]
+    const nextIndex = (reelIndex + 1) % slides.length
+    const next = slides[nextIndex]
+    current.style.transition = 'transform 0.55s cubic-bezier(.45,.05,.15,1)'
+    current.style.transform = 'translateY(-100%)'
+    current.classList.remove('active')
+    next.style.transition = 'none'
+    next.style.transform = 'translateY(100%)'
+    next.offsetHeight
+    next.style.transition = 'transform 0.55s cubic-bezier(.45,.05,.15,1)'
+    next.style.transform = 'translateY(0)'
+    next.classList.add('active')
+    bars[reelIndex].classList.remove('active')
+    reelIndex = nextIndex
+    bars[reelIndex].classList.add('active')
+    bars.forEach(bar => {
+      const fill = bar.querySelector('.rp-fill')
+      fill.style.animation = 'none'
+      fill.offsetHeight
+      fill.style.animation = ''
+    })
+    setTimeout(() => {
+      current.style.transition = 'none'
+      current.style.transform = 'translateY(100%)'
+    }, 600)
+    clearInterval(reelTimer)
+    reelTimer = setInterval(advanceReel, 4000)
+  }
+  slides.forEach((s, i) => {
+    if (i === 0) { s.style.transition = 'none'; s.style.transform = 'translateY(0)'; s.classList.add('active') }
+    else { s.style.transition = 'none'; s.style.transform = 'translateY(100%)'; s.classList.remove('active') }
+  })
+  bars.forEach((b, i) => b.classList.toggle('active', i === 0))
+  clearInterval(reelTimer)
+  reelTimer = setInterval(advanceReel, 4000)
+}
+
+// ── COUNTERS ──
+function getCounter(key, base, increment) {
+  let val = parseInt(localStorage.getItem('hp_' + key))
+  if (!val || val < base) val = base
+  val += increment
+  localStorage.setItem('hp_' + key, val.toString())
+  return val
+}
+function formatK(num) { return (num / 1000).toFixed(1) }
+function animateCounter(el, target, displayFn, duration) {
+  const start = 0, isDecimal = target % 1 !== 0
+  gsap.fromTo(el, { textContent: start }, {
+    textContent: target, duration: duration || 2, ease: 'power2.out',
+    snap: { textContent: isDecimal ? 0.1 : 1 },
+    onUpdate: () => {
+      const val = parseFloat(el.textContent)
+      el.textContent = displayFn ? displayFn(val) : isDecimal ? val.toFixed(1) : Math.round(val)
+    },
+    onComplete: () => { el.textContent = displayFn ? displayFn(target) : isDecimal ? target.toFixed(1) : Math.round(target) }
+  })
+}
+
+// ── WAITLIST ──
+function setupWaitlist(emailId, submitId, successId) {
+  const emailInput = document.getElementById(emailId)
+  const submitBtn = document.getElementById(submitId)
+  const successMsg = document.getElementById(successId)
+  if (!emailInput || !submitBtn || !successMsg) return
+  submitBtn.addEventListener('click', () => {
+    const email = emailInput.value.trim()
+    if (!email || !email.includes('@')) { emailInput.style.borderColor = '#E84B95'; return }
+    emailInput.style.borderColor = 'rgba(255,255,255,0.06)'
+    successMsg.style.display = 'block'
+    emailInput.value = ''
+    setTimeout(() => { successMsg.style.display = 'none' }, 4000)
+  })
+}
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar')?.classList.toggle('scrolled', window.scrollY > 40)
+})
+
+// ── CTA TOGGLES ──
+document.querySelectorAll('.cta-toggle').forEach(toggle => {
+  toggle.querySelectorAll('.cta-toggle-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+      toggle.querySelectorAll('.cta-toggle-btn').forEach(b => b.classList.remove('active'))
+      this.classList.add('active')
+    })
+  })
+})
+
+// ── PERSISTENT COUNTER VALUES ──
+const hpWaitlistCount = getCounter('waitlist', 2800, Math.floor(Math.random() * 3) + 1)
+const hpBizCount = getCounter('businesses', 1200, Math.floor(Math.random() * 2))
+const hpCityCount = 30
+
+// ── SET INITIAL STATES ──
+gsap.set('.hero-badge', { opacity: 0, y: 20 })
+gsap.set('.h1-line', { opacity: 0, y: 40 })
+gsap.set('.hero-sub', { opacity: 0, y: 20 })
+gsap.set('.hero-actions', { opacity: 0, y: 20 })
+gsap.set('.hero-stats', { opacity: 0, y: 20 })
+gsap.set('.hero-mockup', { opacity: 0, y: 30, scale: 0.9 })
+gsap.set('.mockup-float', { opacity: 0, scale: 0.8 })
+gsap.set('.stats-bar', { opacity: 0, y: 20 })
+gsap.set('.feature-card', { opacity: 0, y: 30 })
+gsap.set('.discover-card', { opacity: 0, y: 30 })
+gsap.set('.story-card', { opacity: 0, y: 30 })
+gsap.set('.testimonial-card', { opacity: 0, y: 30 })
+gsap.set('.cta-content > *', { opacity: 0, y: 20 })
+
+// ── PAGE LOAD TIMELINE ──
+window.addEventListener('load', () => {
+  initMockupReel()
+  renderAvatars('cta-avatars')
+  setupWaitlist('cta-email', 'cta-submit', 'cta-success')
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } })
+  tl.to('.hero-badge', { opacity: 1, y: 0, duration: 0.6 })
+    .to('.h1-line', { opacity: 1, y: 0, duration: 0.7, stagger: 0.1 }, '-=0.3')
+    .to('.hero-sub', { opacity: 1, y: 0, duration: 0.5 }, '-=0.3')
+    .to('.hero-actions', { opacity: 1, y: 0, duration: 0.5 }, '-=0.2')
+    .to('.hero-stats', { opacity: 1, y: 0, duration: 0.5 }, '-=0.2')
+    .to('.hero-mockup', { opacity: 1, y: 0, scale: 1, duration: 0.8, ease: 'back.out(1.4)' }, '-=0.5')
+    .to('.mockup-float', { opacity: 1, scale: 1, duration: 0.5, stagger: 0.15 }, '-=0.3')
+  document.querySelectorAll('.hero-stat-num').forEach(el => {
+    const parent = el.closest('.hero-stat')
+    if (!parent) return
+    const label = parent.querySelector('.hero-stat-label')
+    if (!label) return
+    const text = label.textContent.trim().toLowerCase()
+    if (text.includes('waitlist')) { animateCounter(el, parseFloat(formatK(hpWaitlistCount)), n => n.toFixed(1), 2) }
+    else if (text.includes('cities')) { animateCounter(el, hpCityCount, null, 1.5) }
+    else if (text.includes('businesses')) { animateCounter(el, parseFloat(formatK(hpBizCount)), n => n.toFixed(1), 2) }
+  })
+})
+
+// ── SCROLL TRIGGERS ──
+gsap.registerPlugin(ScrollTrigger)
+
+ScrollTrigger.create({
+  trigger: '.stats-bar', start: 'top 95%',
+  onEnter: () => {
+    gsap.to('.stats-bar', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+    document.querySelectorAll('.stats-bar-num').forEach(el => {
+      const parent = el.closest('.stats-bar-item')
+      if (!parent) return
+      const label = parent.querySelector('.stats-bar-label')
+      if (!label) return
+      const text = label.textContent.trim().toLowerCase()
+      if (text.includes('waitlist')) { animateCounter(el, parseFloat(formatK(hpWaitlistCount)), n => n.toFixed(1), 1.5) }
+      else if (text.includes('cities')) { animateCounter(el, hpCityCount, null, 1.5) }
+      else if (text.includes('businesses')) { animateCounter(el, parseFloat(formatK(hpBizCount)), n => n.toFixed(1), 1.5) }
+    })
+  }
+})
+
+ScrollTrigger.batch('.feature-card', {
+  onEnter: batch => { batch.forEach((card, i) => { gsap.to(card, { opacity: 1, y: 0, duration: 0.6, delay: i * 0.08, ease: 'power3.out' }) }) },
+  start: 'top 88%'
+})
+
+ScrollTrigger.batch('.discover-card', {
+  onEnter: batch => { batch.forEach((card, i) => { gsap.to(card, { opacity: 1, y: 0, duration: 0.6, delay: i * 0.1, ease: 'power3.out' }) }) },
+  start: 'top 85%'
+})
+
+ScrollTrigger.batch('.story-card', {
+  onEnter: batch => {
+    batch.forEach((card, i) => {
+      gsap.to(card, {
+        opacity: 1, y: 0, duration: 0.5, delay: i * 0.08, ease: 'power3.out',
+        onStart: () => {
+          const fill = card.querySelector('.story-progress-fill')
+          if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; requestAnimationFrame(() => { fill.style.transition = 'width 3s linear'; fill.style.width = '100%' }) }
+        }
+      })
+    })
+  },
+  start: 'top 90%'
+})
+
+document.querySelectorAll('.radar-selector').forEach(sel => {
+  sel.addEventListener('mouseenter', () => {
+    document.querySelectorAll('.radar-selector').forEach(s => s.classList.remove('active'))
+    sel.classList.add('active')
+    const target = sel.dataset.target
+    document.querySelectorAll('.radar-hotspot').forEach(h => { h.style.opacity = h.dataset.id === target ? '1' : '0.3'; h.style.transition = 'opacity 0.3s' })
+  })
+})
+document.querySelector('.radar-selectors')?.addEventListener('mouseleave', () => {
+  document.querySelectorAll('.radar-hotspot').forEach(h => { h.style.opacity = '1' })
+})
+
+gsap.set('.radar-section', { opacity: 0, y: 30 })
+ScrollTrigger.create({
+  trigger: '.radar-section', start: 'top 85%',
+  onEnter: () => gsap.to('.radar-section', { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+})
+
+ScrollTrigger.batch('.testimonial-card', {
+  onEnter: batch => { batch.forEach((card, i) => { gsap.to(card, { opacity: 1, y: 0, duration: 0.6, delay: i * 0.1, ease: 'power3.out' }) }) },
+  start: 'top 85%'
+})
+
+ScrollTrigger.create({
+  trigger: '.cta-section', start: 'top 80%',
+  onEnter: () => { gsap.to('.cta-content > *', { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'power3.out' }) }
+})
+
+ScrollTrigger.create({
+  trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1,
+  onUpdate: self => { const grid = document.querySelector('.hero-grid'); if (grid) grid.style.transform = 'translateY(' + self.progress * 80 + 'px)' }
+})
+
+ScrollTrigger.create({
+  trigger: '.discover-section', start: 'top bottom', end: 'bottom top', scrub: 1,
+  onUpdate: self => { const glow = document.querySelector('.discover-glow'); if (glow) glow.style.transform = 'translateX(-50%) translateY(' + (self.progress * 60 - 30) + 'px)' }
+})
+</script>
+</body>
+</html>
