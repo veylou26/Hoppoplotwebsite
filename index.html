@@ -2376,5 +2376,46 @@ ScrollTrigger.create({
   onUpdate: self => { const glow = document.querySelector('.discover-glow'); if (glow) glow.style.transform = 'translateX(-50%) translateY(' + (self.progress * 60 - 30) + 'px)' }
 })
 </script>
+  <script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+  const supabase = createClient(
+    'https://brqowxubjsqdtdurtmrv.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJycW93eHVianNxZHRkdXJ0bXJ2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYxMjIwNDAsImV4cCI6MjA5MTY5ODA0MH0.JtVFONePV-Llqp16T8bjdP8Dy-ijg-bSozIcrnmYe_4'
+  )
+
+  async function joinWaitlist(email, userType) {
+    const { error } = await supabase
+      .from('waitlist')
+      .insert({ email, user_type: userType })
+    if (error) {
+      if (error.code === '23505') return true        // already on the list → success
+      console.error('Waitlist error:', error)
+      return false
+    }
+    return true
+  }
+
+  // --- Wiring: adjust these 3 selectors to match your markup ---
+  const form        = document.querySelector('#waitlist-form')      // the form / container
+  const emailInput  = document.querySelector('#waitlist-email')     // the email <input>
+  const successEl   = document.querySelector('#waitlist-success')   // your "You're on the list!" element
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+    const email = emailInput.value.trim()
+    // read your Personal/Business toggle → must be exactly 'personal' or 'business'
+    const userType = document.querySelector('.toggle.active')?.dataset.type || 'personal'
+    if (!email) return
+
+    const ok = await joinWaitlist(email, userType)
+    if (ok) {
+      form.style.display = 'none'
+      successEl.style.display = 'block'
+    } else {
+      alert('Something went wrong — please try again.')
+    }
+  })
+</script>
 </body>
 </html>
