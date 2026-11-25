@@ -19,6 +19,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/reel.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -39,17 +40,132 @@
 </header>
 <main id="main">
 
-<section class="hero">
-  <div class="container">
-    <span class="eyebrow"><span class="dot"></span>Local discovery for people and independent businesses</span>
-    <h1>Everything <span class="grad">local</span>, in one place.</h1>
-    <p class="lead">HippoPlot shows you what's happening around you: posts from neighborhood businesses and people, a live map of places and events, AI Gems found from public event listings, and Plans you can make with friends.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="#features">Explore HippoPlot</a>
-      <a class="btn btn-ghost" href="#business">For businesses</a>
+<section class="hero hero-split">
+  <div class="container hero-grid">
+    <div class="hero-copy">
+      <span class="eyebrow"><span class="dot"></span>Local discovery for people and independent businesses</span>
+      <h1>Everything <span class="grad">local</span>, in one place.</h1>
+      <p class="lead">HippoPlot shows you what's happening around you: posts from neighborhood businesses and people, a live map of places and events, AI Gems found from public event listings, and Plans you can make with friends.</p>
+      <div class="actions">
+        <a class="btn btn-primary" href="#features">Explore HippoPlot</a>
+        <a class="btn btn-ghost" href="#business">For businesses</a>
+      </div>
     </div>
+
+    <div class="reel" id="reel" role="region" aria-roledescription="carousel" aria-label="HippoPlot features preview">
+      <div class="reel-stage">
+        
+      <div class="reel-float f-plans" aria-hidden="true">&#128197; Make plans</div>
+      <div class="reel-float f-gems" aria-hidden="true">&#10022; AI Gems near you</div>
+      <div class="reel-float f-deal" aria-hidden="true">&#127991; New deal nearby</div>
+
+        <div class="phone">
+          <div class="phone-notch" aria-hidden="true"></div>
+          <div class="phone-screen">
+            <div class="reel-progress" aria-hidden="true"></div>
+            <div class="reel-track">
+
+          <div class="reel-slide is-active" data-feature="feed" aria-label="Feed example">
+            <img src="https://images.unsplash.com/photo-1509365465985-25d11c17e812?auto=format&fit=crop&w=600&h=1066&q=75" alt="Fresh pastries on a bakery counter" width="600" height="1066" decoding="async">
+            <div class="rs-shade"></div>
+            <div class="rs-side" aria-hidden="true">
+              <span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.7 4.5c2 0 3.6 1.1 4.3 2.6.7-1.5 2.3-2.6 4.3-2.6 3.7 0 5.8 3.8 4.3 7.3C19.5 16.4 12 21 12 21Z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v14"/></svg></span>
+            </div>
+            <div class="rs-bottom">
+              <span class="rs-tag">Feed &middot; Deal</span>
+              <div class="rs-title">Golden Crumb Bakery</div>
+              <p class="rs-text">Fresh sourdough out at 8 AM. Two croissants for $5 until noon today.</p>
+              <span class="rs-cta">Get Deal</span>
+            </div>
+          </div>
+
+          <div class="reel-slide" data-feature="map" aria-label="Map example">
+            <div class="rs-map" aria-hidden="true">
+              <i class="road r1"></i><i class="road r2"></i><i class="road r3"></i><i class="road r4"></i>
+              <i class="park"></i><i class="water"></i>
+              <b class="pin p-biz" style="top:22%;left:24%"></b>
+              <b class="pin p-biz" style="top:38%;left:64%"></b>
+              <b class="pin p-gem" style="top:52%;left:34%"></b>
+              <b class="pin p-gem" style="top:30%;left:46%"></b>
+              <b class="pin p-biz" style="top:60%;left:72%"></b>
+              <b class="pin p-gem" style="top:68%;left:18%"></b>
+              <b class="you" style="top:47%;left:50%"></b>
+            </div>
+            <div class="rs-chips" aria-hidden="true"><span class="on">All</span><span>Businesses</span><span>AI Gems</span></div>
+            <div class="rs-bottom">
+              <span class="rs-tag rs-tag-cyan">Map</span>
+              <div class="rs-title">This weekend near you</div>
+              <p class="rs-text">Businesses and upcoming events on one map. Filter by category or pick a date.</p>
+              <span class="rs-pill">&#128197; This weekend &times;</span>
+            </div>
+          </div>
+
+          <div class="reel-slide" data-feature="gems" aria-label="AI Gems example">
+            <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=600&h=1066&q=75" alt="Crowd enjoying an outdoor concert" width="600" height="1066" loading="lazy" decoding="async">
+            <div class="rs-shade"></div>
+            <div class="rs-side" aria-hidden="true">
+              <span><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.3 3 4.5 6.7 4.5c2 0 3.6 1.1 4.3 2.6.7-1.5 2.3-2.6 4.3-2.6 3.7 0 5.8 3.8 4.3 7.3C19.5 16.4 12 21 12 21Z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M21 12a8 8 0 0 1-11.6 7.1L3 21l1.9-6.4A8 8 0 1 1 21 12Z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg></span><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7M16 6l-4-4-4 4M12 2v14"/></svg></span>
+            </div>
+            <div class="rs-bottom">
+              <span class="rs-tag rs-tag-violet">&#10022; AI Gem</span>
+              <div class="rs-title">Summer Music in the Park</div>
+              <p class="rs-text">Saturday &middot; 6:00 PM &middot; Free outdoor concert</p>
+              <span class="rs-source">Found in a public event listing &middot; View source &#8599;</span>
+            </div>
+          </div>
+
+          <div class="reel-slide rs-ui" data-feature="plans" aria-label="Plans example">
+            <div class="rs-ui-inner">
+              <span class="rs-tag rs-tag-amber">Plans</span>
+              <div class="rs-title">Friday night?</div>
+              <p class="rs-text">4 friends invited &middot; vote on an option</p>
+              <div class="vote"><div class="vote-row"><span>Live jazz at The Loft</span><b>3</b></div><i style="width:75%"></i></div>
+              <div class="vote"><div class="vote-row"><span>Night market downtown</span><b>2</b></div><i style="width:50%"></i></div>
+              <div class="vote"><div class="vote-row"><span>Dinner &amp; a movie</span><b>1</b></div><i style="width:25%"></i></div>
+              <div class="rs-avatars" aria-hidden="true"><span>A</span><span>J</span><span>M</span><span>K</span></div>
+              <span class="rs-cta rs-cta-ghost">+ Add an Event</span>
+            </div>
+          </div>
+
+          <div class="reel-slide rs-ui" data-feature="business" aria-label="HippoPlot Business example">
+            <img class="rs-bg" src="https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=600&h=1066&q=75" alt="" width="600" height="1066" loading="lazy" decoding="async">
+            <div class="rs-ui-inner rs-glass">
+              <span class="rs-tag">HippoPlot Business</span>
+              <div class="rs-title">Bloom &amp; Petal</div>
+              <p class="rs-text">Your posts this week</p>
+              <div class="rs-chart" aria-hidden="true">
+                <i style="height:35%"></i><i style="height:52%"></i><i style="height:44%"></i><i style="height:70%"></i><i style="height:58%"></i><i style="height:86%"></i><i style="height:76%"></i>
+              </div>
+              <div class="rs-stats" aria-hidden="true"><span>Views</span><span>Clicks</span><span>Saves</span></div>
+              <p class="rs-text" style="margin-top:10px">Quick Replies</p>
+              <div class="rs-replies" aria-hidden="true"><span>Are you open today?</span><span>Do you deliver?</span></div>
+              <span class="rs-cta">Order Flowers</span>
+            </div>
+          </div>
+
+            </div>
+            <button type="button" class="reel-hit reel-prev" aria-label="Previous feature"></button>
+            <button type="button" class="reel-hit reel-next" aria-label="Next feature"></button>
+          </div>
+        </div>
+      </div>
+      <div class="reel-tabs" role="group" aria-label="Choose a feature">
+        <button type="button" class="reel-tab is-active" data-go="0" aria-pressed="true">Feed</button>
+        <button type="button" class="reel-tab" data-go="1" aria-pressed="false">Map</button>
+        <button type="button" class="reel-tab" data-go="2" aria-pressed="false">AI Gems</button>
+        <button type="button" class="reel-tab" data-go="3" aria-pressed="false">Plans</button>
+        <button type="button" class="reel-tab" data-go="4" aria-pressed="false">Business</button>
+      </div>
+      <p class="reel-note">Example screens for illustration.</p>
+      <p class="sr-only" aria-live="polite" id="reel-status"></p>
+    </div>
+
   </div>
 </section>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track"><span class="tk-item">Neighborhood Cafés</span><span class="tk-dot"></span><span class="tk-item">Home Studios</span><span class="tk-dot"></span><span class="tk-item">Local Bakeries</span><span class="tk-dot"></span><span class="tk-item">Run Clubs</span><span class="tk-dot"></span><span class="tk-item">Pop-up Galleries</span><span class="tk-dot"></span><span class="tk-item">Farmers Markets</span><span class="tk-dot"></span><span class="tk-item">Vintage Shops</span><span class="tk-dot"></span><span class="tk-item">Live Music</span><span class="tk-dot"></span><span class="tk-item">Food Trucks</span><span class="tk-dot"></span><span class="tk-item">Craft Workshops</span><span class="tk-dot"></span><span class="tk-item">Neighborhood Cafés</span><span class="tk-dot"></span><span class="tk-item">Home Studios</span><span class="tk-dot"></span><span class="tk-item">Local Bakeries</span><span class="tk-dot"></span><span class="tk-item">Run Clubs</span><span class="tk-dot"></span><span class="tk-item">Pop-up Galleries</span><span class="tk-dot"></span><span class="tk-item">Farmers Markets</span><span class="tk-dot"></span><span class="tk-item">Vintage Shops</span><span class="tk-dot"></span><span class="tk-item">Live Music</span><span class="tk-dot"></span><span class="tk-item">Food Trucks</span><span class="tk-dot"></span><span class="tk-item">Craft Workshops</span><span class="tk-dot"></span></div>
+</div>
 
 <section id="features">
   <div class="container">
