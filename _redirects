@@ -1,0 +1,11 @@
+# App links shared from the HippoPlot app: show the 'Open in HippoPlot' page (HTTP 200).
+# Anything not listed here still gets the real 404 page.
+/business/* /open-in-app 200
+/user/* /open-in-app 200
+/feed /open-in-app 200
+/feed/* /open-in-app 200
+/settings /open-in-app 200
+/settings/* /open-in-app 200
+/map /open-in-app 200
+/map/* /open-in-app 200
+/reset-password /open-in-app 200
